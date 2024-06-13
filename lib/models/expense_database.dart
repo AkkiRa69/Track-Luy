@@ -100,9 +100,22 @@ class ExpenseDatabase extends ChangeNotifier {
   }
 
   Future<void> readIncome() async {
-    final incomes = await isar.incomes.where().findAll(); // Read all expenses
+    final incomes = await isar.incomes.where().findAll(); // Read all incomes
     _incomeList.clear();
     _incomeList.addAll(incomes);
+
+    // Initialize with an income of 100 if the list is empty
+    if (_incomeList.isEmpty) {
+      final initialIncome = Income(
+        name: 'Initial Income',
+        amount: 100.0,
+        date: DateTime.now(),
+        des: 'Initial income entry',
+        emoji: '💰',
+      );
+      await addIncome(initialIncome);
+    }
+
     notifyListeners();
   }
 

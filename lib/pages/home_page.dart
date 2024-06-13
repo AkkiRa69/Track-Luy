@@ -11,7 +11,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,7 +23,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final PageController _pageController = PageController();
+  final PageController _pageController = PageController(viewportFraction: 1);
   final List<Color> colors1 = [
     const Color.fromARGB(255, 5, 19, 33),
     const Color(0xff292d32),
@@ -111,30 +113,42 @@ class _HomePageState extends State<HomePage> {
                 // Card
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.25,
-                  child: PageView(
+                  child: PageView.builder(
                     controller: _pageController,
-                    children: [
-                      MyCard(
-                        totalBalance: totalBalance,
-                        colors: colors1,
-                      ),
-                      MyImageCard(
-                        image: "assets/images/card_back1.jpg",
-                        totalBalance: totalBalance,
-                      ),
-                      MyImageCard(
-                        image: "assets/images/card_back2.png",
-                        totalBalance: totalBalance,
-                      ),
-                      MyImageCard(
-                        image: "assets/images/card_back3.png",
-                        totalBalance: totalBalance,
-                      ),
-                      MyImageCard(
-                        image: "assets/images/card_back4.png",
-                        totalBalance: totalBalance,
-                      ),
-                    ],
+                    itemCount: 5,
+                    itemBuilder: (context, index) {
+                      return AnimatedBuilder(
+                        animation: _pageController,
+                        builder: (context, child) {
+                          double value = 1.0;
+                          if (_pageController.position.haveDimensions) {
+                            value = _pageController.page! - index;
+                            value = (1 - (value.abs() * 0.3)).clamp(0.0, 1.0);
+                          }
+                          return Center(
+                            child: SizedBox(
+                              height: Curves.easeOut.transform(value) *
+                                  MediaQuery.of(context).size.height *
+                                  0.30,
+                              width: Curves.easeOut.transform(value) *
+                                  MediaQuery.of(context).size.width,
+                              child: child,
+                            ),
+                          );
+                        },
+                        child: index == 0
+                            ? MyCard(
+                                totalBalance: totalBalance,
+                                colors: colors1,
+                              )
+                            : MyImageCard(
+                                image: index == 1
+                                    ? "assets/images/card_back$index.jpg"
+                                    : "assets/images/card_back$index.png",
+                                totalBalance: totalBalance,
+                              ),
+                      );
+                    },
                   ),
                 ),
 
@@ -359,8 +373,16 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(50),
       ),
       onPressed: () {
-        showModalBottomSheet(
-          isScrollControlled: true,
+        showBarModalBottomSheet(
+          // expand: true,
+          // isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12),
+              topRight: Radius.circular(12),
+            ),
+          ),
+          barrierColor: Colors.black.withOpacity(0.7),
           context: context,
           builder: (context) => Container(
             decoration: const BoxDecoration(
@@ -388,79 +410,111 @@ class _HomePageState extends State<HomePage> {
 
                 // expense + income button
                 Container(
+                  width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: const Color(0xff2f2f2f),
                     ),
                     borderRadius: BorderRadius.circular(50),
                   ),
+                  padding: const EdgeInsets.only(left: 3, top: 3, bottom: 3),
+                  // child: Row(
+                  //   children: [
+                  //     //expense button
+                  //     Expanded(
+                  //       child: Container(
+                  //         // curve: Curves.linearToEaseOut,
+                  //         margin: const EdgeInsets.all(3),
+                  //         // duration: const Duration(milliseconds: 300),
+                  //         decoration: BoxDecoration(
+                  //           color: currentIndex == 0
+                  //               ? const Color(0xff4e4d4d)
+                  //               : Colors.transparent,
+                  //           borderRadius: BorderRadius.circular(50),
+                  //         ),
+                  //         child: MaterialButton(
+                  //           shape: RoundedRectangleBorder(
+                  //             borderRadius: BorderRadius.circular(50),
+                  //           ),
+                  //           onPressed: () {
+                  //             setState(() {
+                  //               currentIndex = 0;
+                  //             });
+                  //           },
+                  //           child: const Padding(
+                  //             padding: EdgeInsets.all(13.0),
+                  //             child: Text(
+                  //               "Expense",
+                  //               style: TextStyle(
+                  //                 color: Colors.white,
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+
+                  //     //income button
+                  //     Expanded(
+                  //       child: Container(
+                  //         // curve: Curves.linearToEaseOut,
+                  //         margin: const EdgeInsets.all(3),
+                  //         // duration: const Duration(milliseconds: 300),
+                  //         decoration: BoxDecoration(
+                  //           color: currentIndex == 1
+                  //               ? const Color(0xff4e4d4d)
+                  //               : Colors.transparent,
+                  //           borderRadius: BorderRadius.circular(50),
+                  //         ),
+                  //         child: MaterialButton(
+                  //           shape: RoundedRectangleBorder(
+                  //             borderRadius: BorderRadius.circular(50),
+                  //           ),
+                  //           onPressed: () {
+                  //             setState(() {
+                  //               currentIndex = 1;
+                  //             });
+                  //           },
+                  //           child: const Padding(
+                  //             padding: EdgeInsets.all(13.0),
+                  //             child: Text(
+                  //               "Income",
+                  //               style: TextStyle(
+                  //                 color: Colors.white,
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   child: Row(
                     children: [
-                      //expense button
                       Expanded(
-                        child: Container(
-                          // curve: Curves.linearToEaseOut,
-                          margin: const EdgeInsets.all(3),
-                          // duration: const Duration(milliseconds: 300),
-                          decoration: BoxDecoration(
-                            color: currentIndex == 0
-                                ? const Color(0xff4e4d4d)
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: MaterialButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                currentIndex = 0;
-                              });
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.all(13.0),
-                              child: Text(
-                                "Expense",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      //income button
-                      Expanded(
-                        child: Container(
-                          // curve: Curves.linearToEaseOut,
-                          margin: const EdgeInsets.all(3),
-                          // duration: const Duration(milliseconds: 300),
-                          decoration: BoxDecoration(
-                            color: currentIndex == 1
-                                ? const Color(0xff4e4d4d)
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: MaterialButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                currentIndex = 1;
-                              });
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.all(13.0),
-                              child: Text(
-                                "Income",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
+                        child: ToggleSwitch(
+                          minWidth: double.infinity,
+                          minHeight: 50,
+                          cornerRadius: 50.0,
+                          animate: true,
+                          animationDuration: 200,
+                          curve: Curves.linearToEaseOut,
+                          activeBgColors: const [
+                            [Color(0xff4e4d4d)],
+                            [Color(0xff4e4d4d)]
+                          ],
+                          activeFgColor: Colors.white,
+                          inactiveBgColor: Colors.transparent,
+                          inactiveFgColor: Colors.white,
+                          initialLabelIndex: currentIndex,
+                          totalSwitches: 2,
+                          labels: const ['Expense', 'Income'],
+                          radiusStyle: true,
+                          onToggle: (index) {
+                            setState(() {
+                              currentIndex = index!;
+                            });
+                          },
                         ),
                       ),
                     ],
@@ -969,7 +1023,6 @@ class _HomePageState extends State<HomePage> {
         height: 30,
       ),
       label: '•',
-      
     );
   }
 

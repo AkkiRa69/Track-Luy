@@ -15,7 +15,6 @@ class MyImageCard extends StatelessWidget {
       margin: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.05),
       width: MediaQuery.of(context).size.width * 0.9,
-
       // padding: const EdgeInsets.all(25),
       child: Stack(
         children: [
@@ -36,7 +35,7 @@ class MyImageCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "\$$totalBalance",
+                      "\$${totalBalance.toStringAsFixed(2)}",
                       style: GoogleFonts.lato(
                         fontSize: 34,
                         color: Theme.of(context).colorScheme.surface,

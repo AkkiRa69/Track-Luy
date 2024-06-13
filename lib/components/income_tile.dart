@@ -47,7 +47,12 @@ class IncomeTile extends StatelessWidget {
                     height: 5,
                   ),
                   Text(
-                    DateFormat('MMMM dd, yyyy, EEEE').format(income.date),
+                    isToday(income.date)
+                        ? "Today"
+                        : isYesterday(income.date)
+                            ? "Yesterday"
+                            : DateFormat('MMMM dd, yyyy, EEEE')
+                                .format(income.date),
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.tertiary,
                     ),
@@ -67,4 +72,18 @@ class IncomeTile extends StatelessWidget {
       ),
     );
   }
+}
+
+bool isToday(DateTime date) {
+  final now = DateTime.now();
+  return date.year == now.year &&
+      date.month == now.month &&
+      date.day == now.day;
+}
+
+bool isYesterday(DateTime date) {
+  final yesterday = DateTime.now().subtract(const Duration(days: 1));
+  return date.year == yesterday.year &&
+      date.month == yesterday.month &&
+      date.day == yesterday.day;
 }
