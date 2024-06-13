@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class MyTextField extends StatelessWidget {
+class MyNumField extends StatelessWidget {
   final String text;
   final String hintText;
   final TextEditingController? controller;
-  const MyTextField(
+  const MyNumField(
       {super.key,
       required this.text,
       required this.hintText,
@@ -38,9 +38,10 @@ class MyTextField extends StatelessWidget {
           ),
           padding: const EdgeInsets.all(2),
           child: TextField(
-            autocorrect: true,
             controller: controller,
-            textCapitalization: TextCapitalization.words,
+            autofocus: true,
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.next,
             style: TextStyle(
                 color: Theme.of(context).colorScheme.surface, fontSize: 14),
             decoration: InputDecoration(

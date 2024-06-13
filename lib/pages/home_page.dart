@@ -3,6 +3,7 @@ import 'package:akkhara_tracker/components/expense_tile.dart';
 import 'package:akkhara_tracker/components/income_tile.dart';
 import 'package:akkhara_tracker/components/my_card.dart';
 import 'package:akkhara_tracker/components/my_image_card.dart';
+import 'package:akkhara_tracker/components/my_num_field.dart';
 import 'package:akkhara_tracker/components/my_text_field.dart';
 import 'package:akkhara_tracker/models/expense.dart';
 import 'package:akkhara_tracker/models/expense_database.dart';
@@ -374,8 +375,6 @@ class _HomePageState extends State<HomePage> {
       ),
       onPressed: () {
         showBarModalBottomSheet(
-          // expand: true,
-          // isScrollControlled: true,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(12),
@@ -525,7 +524,7 @@ class _HomePageState extends State<HomePage> {
                 Row(
                   children: [
                     Expanded(
-                      child: MyTextField(
+                      child: MyNumField(
                         text: "Amount",
                         hintText: "0.00 USD",
                         controller: amountController,
