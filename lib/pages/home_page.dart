@@ -15,7 +15,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -58,10 +57,12 @@ class _HomePageState extends State<HomePage> {
   // final PageController _pageController = PageController();
   TextEditingController amountController = TextEditingController();
   TextEditingController desController = TextEditingController();
-  late String selectedCategory;
+  String selectedCategory = '';
   DateTime selectedDate = DateTime.now();
   int currentIndex = 0;
   int index = 0;
+  bool isEmpty = false;
+  List categories = [];
 
   double totalExpense = 0;
   double totalIncome = 0;
@@ -372,9 +373,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  bool isExpand = false;
+  bool isSelected = false;
   Widget _buildFloating() {
-    List categories = context.watch<ExpenseDatabase>().categories;
+    categories = context.watch<ExpenseDatabase>().categories;
     TextEditingController emojiController = TextEditingController();
     TextEditingController cateNameController = TextEditingController();
     return FloatingActionButton(
@@ -382,9 +383,10 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(50),
       ),
       onPressed: () {
-        showBarModalBottomSheet(
+        showModalBottomSheet(
           backgroundColor: const Color(0xff000000),
-          expand: isExpand,
+          // expand: isExpand,
+          isScrollControlled: true,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(12),
@@ -427,77 +429,8 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(50),
                   ),
                   padding: const EdgeInsets.only(left: 3, top: 3, bottom: 3),
-                  // child: Row(
-                  //   children: [
-                  //     //expense button
-                  //     Expanded(
-                  //       child: Container(
-                  //         // curve: Curves.linearToEaseOut,
-                  //         margin: const EdgeInsets.all(3),
-                  //         // duration: const Duration(milliseconds: 300),
-                  //         decoration: BoxDecoration(
-                  //           color: currentIndex == 0
-                  //               ? const Color(0xff4e4d4d)
-                  //               : Colors.transparent,
-                  //           borderRadius: BorderRadius.circular(50),
-                  //         ),
-                  //         child: MaterialButton(
-                  //           shape: RoundedRectangleBorder(
-                  //             borderRadius: BorderRadius.circular(50),
-                  //           ),
-                  //           onPressed: () {
-                  //             setState(() {
-                  //               currentIndex = 0;
-                  //             });
-                  //           },
-                  //           child: const Padding(
-                  //             padding: EdgeInsets.all(13.0),
-                  //             child: Text(
-                  //               "Expense",
-                  //               style: TextStyle(
-                  //                 color: Colors.white,
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ),
 
-                  //     //income button
-                  //     Expanded(
-                  //       child: Container(
-                  //         // curve: Curves.linearToEaseOut,
-                  //         margin: const EdgeInsets.all(3),
-                  //         // duration: const Duration(milliseconds: 300),
-                  //         decoration: BoxDecoration(
-                  //           color: currentIndex == 1
-                  //               ? const Color(0xff4e4d4d)
-                  //               : Colors.transparent,
-                  //           borderRadius: BorderRadius.circular(50),
-                  //         ),
-                  //         child: MaterialButton(
-                  //           shape: RoundedRectangleBorder(
-                  //             borderRadius: BorderRadius.circular(50),
-                  //           ),
-                  //           onPressed: () {
-                  //             setState(() {
-                  //               currentIndex = 1;
-                  //             });
-                  //           },
-                  //           child: const Padding(
-                  //             padding: EdgeInsets.all(13.0),
-                  //             child: Text(
-                  //               "Income",
-                  //               style: TextStyle(
-                  //                 color: Colors.white,
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
+                  //expense + income button
                   child: Row(
                     children: [
                       Expanded(
@@ -570,69 +503,79 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 6),
 
                 //selected category
-                Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.tertiary,
-                          ),
-                        ),
-                        child: DropdownMenu(
-                          menuStyle: MenuStyle(
-                            backgroundColor: WidgetStatePropertyAll(
-                              Colors.black.withOpacity(0.7),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: DropdownMenu(
+                            initialSelection: categories.last,
+                            menuStyle: MenuStyle(
+                              backgroundColor: WidgetStatePropertyAll(
+                                  Colors.black.withOpacity(0.7)),
                             ),
-                          ),
-                          inputDecorationTheme: InputDecorationTheme(
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 15),
-                            isDense: true,
-                            hintStyle: TextStyle(
-                              color: Theme.of(context).colorScheme.tertiary,
-                            ),
-                            border: InputBorder.none,
-                          ),
-                          hintText: "Select category",
-                          selectedTrailingIcon: Icon(
-                            Icons.arrow_drop_up,
-                            color: Theme.of(context).colorScheme.surface,
-                          ),
-                          trailingIcon: Icon(
-                            Icons.arrow_drop_down_outlined,
-                            color: Theme.of(context).colorScheme.surface,
-                          ),
-                          textStyle: TextStyle(
-                            color: Theme.of(context).colorScheme.surface,
-                            fontSize: 14,
-                          ),
-                          width: MediaQuery.of(context).size.width * 0.92,
-                          onSelected: (value) {
-                            if (value != null) {
-                              setState(() {
-                                selectedCategory = value;
-                              });
-                            }
-                          },
-                          dropdownMenuEntries: [
-                            for (int i = 0; i < categories.length; i++)
-                              DropdownMenuEntry(
-                                value: categories[i],
-                                label: categories[i],
-                                labelWidget: Text(
-                                  categories[i],
-                                  style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.surface,
-                                  ),
+                            inputDecorationTheme: InputDecorationTheme(
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                  color: Theme.of(context).colorScheme.tertiary,
                                 ),
                               ),
-                          ],
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 15),
+                              isDense: true,
+                              hintStyle: TextStyle(
+                                color: Theme.of(context).colorScheme.tertiary,
+                              ),
+                              border: InputBorder.none,
+                            ),
+                            hintText: "Select category",
+                            selectedTrailingIcon: Icon(
+                              Icons.arrow_drop_up,
+                              color: Theme.of(context).colorScheme.surface,
+                            ),
+                            trailingIcon: Icon(
+                              Icons.arrow_drop_down_outlined,
+                              color: Theme.of(context).colorScheme.surface,
+                            ),
+                            textStyle: TextStyle(
+                              color: Theme.of(context).colorScheme.surface,
+                              fontSize: 14,
+                            ),
+                            width: MediaQuery.of(context).size.width * 0.92,
+                            onSelected: (value) {
+                              setState(() {
+                                isSelected = true;
+                                selectedCategory = value;
+                              });
+                            },
+                            dropdownMenuEntries: [
+                              for (int i = 0; i < categories.length; i++)
+                                DropdownMenuEntry(
+                                  value: categories[i],
+                                  label: categories[i],
+                                  labelWidget: Text(
+                                    categories[i],
+                                    style: TextStyle(
+                                      color:
+                                          Theme.of(context).colorScheme.surface,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (isEmpty) // Display error message below the dropdown when isEmpty is true
+                      const Padding(
+                        padding: EdgeInsets.only(left: 12, top: 4),
+                        child: Text(
+                          'Please select a category.',
+                          style: TextStyle(color: Colors.red),
                         ),
                       ),
-                    ),
                   ],
                 ),
 
@@ -898,41 +841,32 @@ class _HomePageState extends State<HomePage> {
                       Expanded(
                         child: SaveButton(
                           onPreesed: () {
+                            if (isSelected == false) {
+                              selectedCategory = categories.last;
+                              print("last$selectedCategory");
+                            }
+                            if (isSelected == true) {
+                              setState(() {
+                                isSelected = false;
+                              });
+                            }
+
+                            // Process the selected category
+                            List<String> categoryParts =
+                                selectedCategory.split(' ');
+                            if (categoryParts.length < 2) {
+                              showInvalidAlert(
+                                  context, 'Invalid category format.');
+                              return;
+                            }
+
+                            String emoji = categoryParts[0];
+                            String categoryName =
+                                categoryParts.sublist(1).join(' ');
+
+                            double amount = double.parse(amountController.text);
                             if (currentIndex == 0) {
                               try {
-                                // Check if selectedCategory is not null or empty
-                                if (selectedCategory.isEmpty) {
-                                  showInvalidAlert(
-                                      context, 'Please select a category.');
-                                }
-
-                                // Split selectedCategory into emoji and category name
-                                List<String> categoryParts =
-                                    selectedCategory.split(' ');
-                                if (categoryParts.length < 2) {
-                                  throw Exception('Invalid category format.');
-                                }
-
-                                String emoji = categoryParts[0];
-                                String categoryName =
-                                    categoryParts.sublist(1).join(' ');
-
-                                // Check if amountController has valid text
-                                if (amountController.text.isEmpty) {
-                                  showInvalidAlert(
-                                      context, 'Please enter an amount.');
-                                }
-
-                                double amount =
-                                    double.parse(amountController.text);
-
-                                // Check if desController has valid text
-                                if (desController.text.isEmpty) {
-                                  throw Exception(
-                                      'Please enter a description.');
-                                }
-
-                                // Create the Expense object
                                 Expense ex = Expense(
                                   name: categoryName,
                                   amount: amount,
@@ -949,6 +883,7 @@ class _HomePageState extends State<HomePage> {
                                 amountController.clear();
                                 desController.clear();
                                 categoryName = "";
+                                selectedCategory = '';
                                 emoji = "";
                                 selectedDate = DateTime.now();
                               } catch (e) {
@@ -960,40 +895,6 @@ class _HomePageState extends State<HomePage> {
                             }
                             if (currentIndex == 1) {
                               try {
-                                // Check if selectedCategory is not null or empty
-                                if (selectedCategory.isEmpty) {
-                                  throw Exception('Please select a category.');
-                                }
-
-                                // Split selectedCategory into emoji and category name
-                                List<String> categoryParts =
-                                    selectedCategory.split(' ');
-                                if (categoryParts.length < 2) {
-                                  throw Exception('Invalid category format.');
-                                }
-
-                                String emoji = categoryParts[0];
-                                String categoryName =
-                                    categoryParts.sublist(1).join(' ');
-
-                                // Check if amountController has valid text
-                                if (amountController.text.isEmpty) {
-                                  throw Exception('Please enter an amount.');
-                                }
-
-                                double amount =
-                                    double.parse(amountController.text);
-
-                                // Check if desController has valid text
-                                if (desController.text.isEmpty) {
-                                  throw Exception(
-                                      'Please enter a description.');
-                                }
-                                print(categoryName);
-                                print(amount);
-                                print(selectedDate);
-                                print(desController.text);
-                                print(emoji);
                                 // Create the Expense object
                                 Income income = Income(
                                   name: categoryName,
@@ -1014,6 +915,7 @@ class _HomePageState extends State<HomePage> {
                                 desController.clear();
                                 categoryName = "";
                                 emoji = "";
+                                selectedCategory = '';
                                 selectedDate = DateTime.now();
                               } catch (e) {
                                 // Show error message using SnackBar

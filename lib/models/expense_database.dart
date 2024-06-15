@@ -44,6 +44,7 @@ class ExpenseDatabase extends ChangeNotifier {
   ];
 
   List<String> get categories => _categories;
+  String get initializeCate => _categories.last;
 
   Future<void> addCategory(String emoji, String name) async {
     // Create and save the category object
