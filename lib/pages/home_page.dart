@@ -2,9 +2,12 @@ import 'package:akkhara_tracker/components/custome_app_bar.dart';
 import 'package:akkhara_tracker/components/expense_tile.dart';
 import 'package:akkhara_tracker/components/income_tile.dart';
 import 'package:akkhara_tracker/components/my_card.dart';
+import 'package:akkhara_tracker/components/my_emoji_filed.dart';
 import 'package:akkhara_tracker/components/my_image_card.dart';
 import 'package:akkhara_tracker/components/my_num_field.dart';
 import 'package:akkhara_tracker/components/my_text_field.dart';
+import 'package:akkhara_tracker/components/save_button.dart';
+import 'package:akkhara_tracker/helper/my_alert.dart';
 import 'package:akkhara_tracker/models/expense.dart';
 import 'package:akkhara_tracker/models/expense_database.dart';
 import 'package:akkhara_tracker/models/income.dart';
@@ -14,6 +17,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class HomePage extends StatefulWidget {
@@ -73,6 +77,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     context.read<ExpenseDatabase>().readExpenses();
     context.read<ExpenseDatabase>().readIncome();
+    context.read<ExpenseDatabase>().readCate();
   }
 
   @override
@@ -154,30 +159,30 @@ class _HomePageState extends State<HomePage> {
                 ),
 
                 // Indicator
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(vertical: 10),
-                //   child: Center(
-                //     child: SmoothPageIndicator(
-                //       controller: _pageController,
-                //       count: 5,
-                //       effect: WormEffect(
-                //         spacing: 5,
-                //         dotColor: Theme.of(context).colorScheme.tertiary,
-                //         radius: 10,
-                //         dotHeight: 8,
-                //         dotWidth: 8,
-                //         activeDotColor: Theme.of(context).colorScheme.primary,
-                //       ), // Customize the indicator effect
-                //     ),
-                //   ),
-                // ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: Center(
+                    child: SmoothPageIndicator(
+                      controller: _pageController,
+                      count: 5,
+                      effect: ExpandingDotsEffect(
+                        spacing: 5,
+                        dotColor: Theme.of(context).colorScheme.tertiary,
+                        radius: 10,
+                        dotHeight: 8,
+                        dotWidth: 8,
+                        activeDotColor: Theme.of(context).colorScheme.primary,
+                      ), // Customize the indicator effect
+                    ),
+                  ),
+                ),
 
                 // Income and Expenses
                 Padding(
                   padding: EdgeInsets.only(
                       left: MediaQuery.of(context).size.width * 0.05,
                       right: MediaQuery.of(context).size.width * 0.05,
-                      top: 20),
+                      top: 15),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -367,14 +372,19 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  bool isExpand = false;
   Widget _buildFloating() {
     List categories = context.watch<ExpenseDatabase>().categories;
+    TextEditingController emojiController = TextEditingController();
+    TextEditingController cateNameController = TextEditingController();
     return FloatingActionButton(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(50),
       ),
       onPressed: () {
         showBarModalBottomSheet(
+          backgroundColor: const Color(0xff000000),
+          expand: isExpand,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(12),
@@ -638,7 +648,72 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              actions: [
+                                SaveButton(
+                                  onPreesed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  text: 'Cancel',
+                                ),
+                                SaveButton(
+                                  onPreesed: () {
+                                    context.read<ExpenseDatabase>().addCategory(
+                                        emojiController.text,
+                                        cateNameController.text);
+                                    Navigator.pop(context);
+                                  },
+                                  text: 'Add',
+                                ),
+                              ],
+                              backgroundColor: Colors.black,
+                              title: const Text(
+                                "Add your own category",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              content: SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 15),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: MyEmojiField(
+                                              text: "Emoji",
+                                              hintText: "👍",
+                                              controller: emojiController,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 12,
+                                          ),
+                                          Expanded(
+                                            flex: 3,
+                                            child: MyTextField(
+                                              text: "Name",
+                                              hintText: "Enter new name",
+                                              controller: cateNameController,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                         child: Container(
                           decoration: const BoxDecoration(),
                           child: Text(
@@ -817,152 +892,138 @@ class _HomePageState extends State<HomePage> {
                 ),
                 // save button
                 Padding(
-                  padding: const EdgeInsets.only(top: 20),
+                  padding: const EdgeInsets.only(top: 30, bottom: 20),
                   child: Row(
                     children: [
                       Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surface,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: MaterialButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            onPressed: () {
-                              if (currentIndex == 0) {
-                                try {
-                                  // Check if selectedCategory is not null or empty
-                                  if (selectedCategory.isEmpty) {
-                                    throw Exception(
-                                        'Please select a category.');
-                                  }
-
-                                  // Split selectedCategory into emoji and category name
-                                  List<String> categoryParts =
-                                      selectedCategory.split(' ');
-                                  if (categoryParts.length < 2) {
-                                    throw Exception('Invalid category format.');
-                                  }
-
-                                  String emoji = categoryParts[0];
-                                  String categoryName =
-                                      categoryParts.sublist(1).join(' ');
-
-                                  // Check if amountController has valid text
-                                  if (amountController.text.isEmpty) {
-                                    throw Exception('Please enter an amount.');
-                                  }
-
-                                  double amount =
-                                      double.parse(amountController.text);
-
-                                  // Check if desController has valid text
-                                  if (desController.text.isEmpty) {
-                                    throw Exception(
-                                        'Please enter a description.');
-                                  }
-
-                                  // Create the Expense object
-                                  Expense ex = Expense(
-                                    name: categoryName,
-                                    amount: amount,
-                                    date: selectedDate,
-                                    des: desController.text,
-                                    emoji: emoji,
-                                  );
-
-                                  // Add the Expense to the database
-                                  context
-                                      .read<ExpenseDatabase>()
-                                      .addExpense(ex);
-
-                                  // Navigate back
-                                  Navigator.pop(context);
-                                  amountController.clear();
-                                  desController.clear();
-                                  categoryName = "";
-                                  emoji = "";
-                                  selectedDate = DateTime.now();
-                                } catch (e) {
-                                  // Show error message using SnackBar
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(e.toString())),
-                                  );
+                        child: SaveButton(
+                          onPreesed: () {
+                            if (currentIndex == 0) {
+                              try {
+                                // Check if selectedCategory is not null or empty
+                                if (selectedCategory.isEmpty) {
+                                  showInvalidAlert(
+                                      context, 'Please select a category.');
                                 }
-                              }
-                              if (currentIndex == 1) {
-                                try {
-                                  // Check if selectedCategory is not null or empty
-                                  if (selectedCategory.isEmpty) {
-                                    throw Exception(
-                                        'Please select a category.');
-                                  }
 
-                                  // Split selectedCategory into emoji and category name
-                                  List<String> categoryParts =
-                                      selectedCategory.split(' ');
-                                  if (categoryParts.length < 2) {
-                                    throw Exception('Invalid category format.');
-                                  }
-
-                                  String emoji = categoryParts[0];
-                                  String categoryName =
-                                      categoryParts.sublist(1).join(' ');
-
-                                  // Check if amountController has valid text
-                                  if (amountController.text.isEmpty) {
-                                    throw Exception('Please enter an amount.');
-                                  }
-
-                                  double amount =
-                                      double.parse(amountController.text);
-
-                                  // Check if desController has valid text
-                                  if (desController.text.isEmpty) {
-                                    throw Exception(
-                                        'Please enter a description.');
-                                  }
-                                  print(categoryName);
-                                  print(amount);
-                                  print(selectedDate);
-                                  print(desController.text);
-                                  print(emoji);
-                                  // Create the Expense object
-                                  Income income = Income(
-                                    name: categoryName,
-                                    amount: amount,
-                                    date: selectedDate,
-                                    des: desController.text,
-                                    emoji: emoji,
-                                  );
-
-                                  // Add the Expense to the database
-                                  context
-                                      .read<ExpenseDatabase>()
-                                      .addIncome(income);
-
-                                  // Navigate back
-                                  Navigator.pop(context);
-                                  amountController.clear();
-                                  desController.clear();
-                                  categoryName = "";
-                                  emoji = "";
-                                  selectedDate = DateTime.now();
-                                } catch (e) {
-                                  // Show error message using SnackBar
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(e.toString())),
-                                  );
+                                // Split selectedCategory into emoji and category name
+                                List<String> categoryParts =
+                                    selectedCategory.split(' ');
+                                if (categoryParts.length < 2) {
+                                  throw Exception('Invalid category format.');
                                 }
+
+                                String emoji = categoryParts[0];
+                                String categoryName =
+                                    categoryParts.sublist(1).join(' ');
+
+                                // Check if amountController has valid text
+                                if (amountController.text.isEmpty) {
+                                  showInvalidAlert(
+                                      context, 'Please enter an amount.');
+                                }
+
+                                double amount =
+                                    double.parse(amountController.text);
+
+                                // Check if desController has valid text
+                                if (desController.text.isEmpty) {
+                                  throw Exception(
+                                      'Please enter a description.');
+                                }
+
+                                // Create the Expense object
+                                Expense ex = Expense(
+                                  name: categoryName,
+                                  amount: amount,
+                                  date: selectedDate,
+                                  des: desController.text,
+                                  emoji: emoji,
+                                );
+
+                                // Add the Expense to the database
+                                context.read<ExpenseDatabase>().addExpense(ex);
+
+                                // Navigate back
+                                Navigator.pop(context);
+                                amountController.clear();
+                                desController.clear();
+                                categoryName = "";
+                                emoji = "";
+                                selectedDate = DateTime.now();
+                              } catch (e) {
+                                // Show error message using SnackBar
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(e.toString())),
+                                );
                               }
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.all(12.0),
-                              child: Text("Save"),
-                            ),
-                          ),
+                            }
+                            if (currentIndex == 1) {
+                              try {
+                                // Check if selectedCategory is not null or empty
+                                if (selectedCategory.isEmpty) {
+                                  throw Exception('Please select a category.');
+                                }
+
+                                // Split selectedCategory into emoji and category name
+                                List<String> categoryParts =
+                                    selectedCategory.split(' ');
+                                if (categoryParts.length < 2) {
+                                  throw Exception('Invalid category format.');
+                                }
+
+                                String emoji = categoryParts[0];
+                                String categoryName =
+                                    categoryParts.sublist(1).join(' ');
+
+                                // Check if amountController has valid text
+                                if (amountController.text.isEmpty) {
+                                  throw Exception('Please enter an amount.');
+                                }
+
+                                double amount =
+                                    double.parse(amountController.text);
+
+                                // Check if desController has valid text
+                                if (desController.text.isEmpty) {
+                                  throw Exception(
+                                      'Please enter a description.');
+                                }
+                                print(categoryName);
+                                print(amount);
+                                print(selectedDate);
+                                print(desController.text);
+                                print(emoji);
+                                // Create the Expense object
+                                Income income = Income(
+                                  name: categoryName,
+                                  amount: amount,
+                                  date: selectedDate,
+                                  des: desController.text,
+                                  emoji: emoji,
+                                );
+
+                                // Add the Expense to the database
+                                context
+                                    .read<ExpenseDatabase>()
+                                    .addIncome(income);
+
+                                // Navigate back
+                                Navigator.pop(context);
+                                amountController.clear();
+                                desController.clear();
+                                categoryName = "";
+                                emoji = "";
+                                selectedDate = DateTime.now();
+                              } catch (e) {
+                                // Show error message using SnackBar
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(e.toString())),
+                                );
+                              }
+                            }
+                          },
+                          text: 'Save',
                         ),
                       ),
                     ],

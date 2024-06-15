@@ -1,3 +1,4 @@
+import 'package:akkhara_tracker/helper/date_cal.dart';
 import 'package:akkhara_tracker/models/expense.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -74,16 +75,3 @@ class ExpenseTile extends StatelessWidget {
   }
 }
 
-bool isToday(DateTime date) {
-  final now = DateTime.now();
-  return date.year == now.year &&
-      date.month == now.month &&
-      date.day == now.day;
-}
-
-bool isYesterday(DateTime date) {
-  final yesterday = DateTime.now().subtract(const Duration(days: 1));
-  return date.year == yesterday.year &&
-      date.month == yesterday.month &&
-      date.day == yesterday.day;
-}

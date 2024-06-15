@@ -46,6 +46,7 @@ dependencies:
   tuple: ^2.0.2
   modal_bottom_sheet: ^3.0.0
   toggle_switch: ^2.3.0
+  quickalert: ^1.1.0
 
 dev_dependencies:
   flutter_test:

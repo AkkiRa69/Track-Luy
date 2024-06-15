@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:akkhara_tracker/models/category.dart';
 import 'package:akkhara_tracker/models/income.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:isar/isar.dart';
@@ -16,7 +17,8 @@ class ExpenseDatabase extends ChangeNotifier {
     isar = await Isar.open(
       [
         ExpenseSchema,
-        IncomeSchema
+        IncomeSchema,
+        CategorySchema
       ], // Ensure ExpenseSchema is correctly defined
       directory: dir.path,
     );
@@ -41,7 +43,48 @@ class ExpenseDatabase extends ChangeNotifier {
     '💊 Health',
   ];
 
-  List get categories => _categories;
+  List<String> get categories => _categories;
+
+  Future<void> addCategory(String emoji, String name) async {
+    // Create and save the category object
+    Category cate = Category()
+      ..emoji = emoji
+      ..name = name;
+
+    await isar.writeTxn(() => isar.categorys.put(cate));
+
+    // Add the new category to the list in the required format
+    _categories.add('$emoji $name');
+    notifyListeners();
+  }
+
+  Future<void> readCate() async {
+    List<Category> cates = await isar.categorys.where().findAll();
+
+    // Clear the list and add predefined categories
+    _categories.clear();
+    _categories.addAll([
+      '🍕 Food',
+      '☕ Drink',
+      '💼 Work',
+      '🎈 Entertainment',
+      '🏡 Apartment',
+      '🚌 Travel',
+      '💎 Subscriptions',
+      '👖 Cloths',
+      '📚 Studying',
+      '🛵 Motorcycle',
+      '💇 Haircut',
+      '🎁 Gifts',
+      '💊 Health',
+    ]);
+
+    // Add categories from the database in the required format
+    for (var cate in cates) {
+      _categories.add('${cate.emoji} ${cate.name}');
+    }
+    notifyListeners();
+  }
 
   Future<void> addExpense(Expense ex) async {
     await isar.writeTxn(() async {
