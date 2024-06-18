@@ -79,47 +79,53 @@ class _ExpenseTileState extends State<ExpenseTile> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.inversePrimary,
-                    shape: BoxShape.circle,
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: const EdgeInsets.all(18),
+                    child: Text(
+                      widget.expense.emoji,
+                      style: const TextStyle(fontSize: 28),
+                    ),
                   ),
-                  padding: const EdgeInsets.all(18),
-                  child: Text(
-                    widget.expense.emoji,
-                    style: const TextStyle(fontSize: 28),
+                  const SizedBox(
+                    width: 15,
                   ),
-                ),
-                const SizedBox(
-                  width: 15,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      widget.expense.des,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          widget.expense.des,
+                          textAlign: TextAlign.start,
+                          overflow: TextOverflow.fade,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 3,
+                        ),
+                        Text(
+                          widget.expense.name,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.tertiary,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      widget.expense.name,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.tertiary,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,

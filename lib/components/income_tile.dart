@@ -79,49 +79,53 @@ class _IncomeTileState extends State<IncomeTile> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.inversePrimary,
-                    shape: BoxShape.circle,
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: const EdgeInsets.all(18),
+                    child: Text(
+                      widget.income.emoji,
+                      style: const TextStyle(fontSize: 28),
+                    ),
                   ),
-                  padding: const EdgeInsets.all(18),
-                  child: Text(
-                    widget.income.emoji,
-                    style: const TextStyle(fontSize: 28),
+                  const SizedBox(
+                    width: 15,
                   ),
-                ),
-                const SizedBox(
-                  width: 15,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      widget.income.des,
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: true,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          widget.income.des,
+                          textAlign: TextAlign.start,
+                          overflow: TextOverflow.fade,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 3,
+                        ),
+                        Text(
+                          widget.income.name,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.tertiary,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      widget.income.name,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.tertiary,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -130,7 +134,7 @@ class _IncomeTileState extends State<IncomeTile> {
                   '+\$${widget.income.amount.toStringAsFixed(2)}',
                   style: GoogleFonts.concertOne(
                     fontSize: 20,
-                    color: const Color.fromARGB(255, 133, 219, 127),
+                    color: const Color.fromARGB(255, 87, 220, 72),
                   ),
                 ),
                 const SizedBox(

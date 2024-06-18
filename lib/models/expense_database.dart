@@ -192,7 +192,7 @@ class ExpenseDatabase extends ChangeNotifier {
         name: 'Initial Income',
         amount: 100.0,
         date: DateTime.now(),
-        des: 'Income',
+        des: 'Initial Income entry my guy',
         emoji: '💰',
       );
       await addIncome(initialIncome);
