@@ -5,9 +5,9 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class MyImageCard extends StatelessWidget {
   final String image;
-  double totalBalance;
-  double totalIncome;
-  MyImageCard(
+  final double totalBalance;
+  final double totalIncome;
+  const MyImageCard(
       {super.key,
       required this.image,
       required this.totalBalance,

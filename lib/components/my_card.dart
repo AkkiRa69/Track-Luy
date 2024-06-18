@@ -4,11 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class MyCard extends StatelessWidget {
-  List<Color> colors;
-  double totalBalance;
-  double totalIncome;
+  final List<Color> colors;
+  final double totalBalance;
+  final double totalIncome;
 
-  MyCard({
+  const MyCard({
     super.key,
     required this.colors,
     required this.totalBalance,
