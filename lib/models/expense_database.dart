@@ -46,6 +46,19 @@ class ExpenseDatabase extends ChangeNotifier {
   List<String> get categories => _categories;
   String get initializeCate => _categories.last;
 
+  final List<DateTime> _dates = [
+    DateTime.now(),
+    DateTime.now().subtract(const Duration(days: 1)),
+    DateTime.now().subtract(const Duration(days: 2)),
+    DateTime.now().subtract(const Duration(days: 3)),
+    DateTime.now().subtract(const Duration(days: 4)),
+    DateTime.now().subtract(const Duration(days: 5)),
+    DateTime.now().subtract(const Duration(days: 6)),
+    DateTime.now().subtract(const Duration(days: 7)),
+  ];
+
+  List<DateTime> get dates => _dates;
+
   Future<void> addCategory(String emoji, String name) async {
     // Create and save the category object
     Category cate = Category()
@@ -103,11 +116,29 @@ class ExpenseDatabase extends ChangeNotifier {
   }
 
   Future<void> updateExpense(int id, Expense ex) async {
-    ex.id = id; // Ensure the ID is set correctly
-    await isar.writeTxn(() async {
-      await isar.expenses.put(ex);
-    });
-    await readExpenses();
+    // Ensure the ID is set correctly and the expense exists
+    final existingExpense = await isar.expenses.get(id);
+    if (existingExpense != null) {
+      await isar.writeTxn(() async {
+        // Update the existing expense with new data
+        ex.id = id; // Ensure the ID is set correctly in the Expense object
+        await isar.expenses.put(ex);
+      });
+    }
+    await readExpenses(); // Refresh or re-read the expenses after update
+  }
+
+  Future<void> updateIncome(int id, Income inc) async {
+    // Ensure the ID is set correctly and the expense exists
+    final existingIncome = await isar.incomes.get(id);
+    if (existingIncome != null) {
+      await isar.writeTxn(() async {
+        // Update the existing expense with new data
+        inc.id = id; // Ensure the ID is set correctly in the Expense object
+        await isar.incomes.put(inc);
+      });
+    }
+    await readIncome(); // Refresh or re-read the expenses after update
   }
 
   Future<void> deleteExpense(int id) async {
@@ -115,6 +146,13 @@ class ExpenseDatabase extends ChangeNotifier {
       await isar.expenses.delete(id);
     });
     await readExpenses();
+  }
+
+  Future<void> deleteIncome(int id) async {
+    await isar.writeTxn(() async {
+      await isar.incomes.delete(id);
+    });
+    await readIncome();
   }
 
   Future<void> deleteAll() async {
@@ -154,7 +192,7 @@ class ExpenseDatabase extends ChangeNotifier {
         name: 'Initial Income',
         amount: 100.0,
         date: DateTime.now(),
-        des: 'Initial income entry',
+        des: 'Income',
         emoji: '💰',
       );
       await addIncome(initialIncome);
