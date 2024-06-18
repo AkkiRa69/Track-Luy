@@ -4,12 +4,29 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class MyCard extends StatelessWidget {
-  final List<Color> colors;
-  final double totalBalance;
-  const MyCard({super.key, required this.colors, required this.totalBalance});
+  List<Color> colors;
+  double totalBalance;
+  double totalIncome;
+
+  MyCard({
+    super.key,
+    required this.colors,
+    required this.totalBalance,
+    required this.totalIncome,
+  });
 
   @override
   Widget build(BuildContext context) {
+    double percent;
+    if (totalIncome != 0) {
+      percent = totalBalance / totalIncome;
+    } else {
+      percent = 0; // or handle this case as per your requirements
+    }
+
+    // Ensure the percent is clamped between 0 and 1
+    percent = percent.clamp(0, 1);
+
     return Container(
       margin: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.05),
@@ -61,7 +78,7 @@ class MyCard extends StatelessWidget {
               animationDuration: 1000,
               barRadius: const Radius.circular(15),
               lineHeight: 5,
-              percent: 0.5,
+              percent: percent,
               backgroundColor: Theme.of(context).colorScheme.tertiary,
               linearGradient: const LinearGradient(
                 colors: [

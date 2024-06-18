@@ -5,12 +5,26 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class MyImageCard extends StatelessWidget {
   final String image;
-  final double totalBalance;
-  const MyImageCard(
-      {super.key, required this.image, required this.totalBalance});
+  double totalBalance;
+  double totalIncome;
+  MyImageCard(
+      {super.key,
+      required this.image,
+      required this.totalBalance,
+      required this.totalIncome});
 
   @override
   Widget build(BuildContext context) {
+    double percent;
+    if (totalIncome != 0) {
+      percent = totalBalance / totalIncome;
+    } else {
+      percent = 0; // or handle this case as per your requirements
+    }
+
+    // Ensure the percent is clamped between 0 and 1
+    percent = percent.clamp(0, 1);
+
     return Container(
       margin: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.05),
@@ -67,7 +81,7 @@ class MyImageCard extends StatelessWidget {
                     animationDuration: 1000,
                     barRadius: const Radius.circular(15),
                     lineHeight: 5,
-                    percent: 0.5,
+                    percent: percent,
                     backgroundColor: Theme.of(context).colorScheme.tertiary,
                     linearGradient: const LinearGradient(
                       colors: [

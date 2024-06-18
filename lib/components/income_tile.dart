@@ -25,7 +25,7 @@ class _IncomeTileState extends State<IncomeTile> {
   TextEditingController cateNameController = TextEditingController();
   String selectedCategory = '';
   DateTime selectedDate = DateTime.now();
-  int currentIndex = 0;
+  int currentIndex = 1;
   bool isSelected = false;
   List categories = [];
 

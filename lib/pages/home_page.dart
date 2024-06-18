@@ -139,12 +139,14 @@ class _HomePageState extends State<HomePage> {
                             ? MyCard(
                                 totalBalance: totalBalance,
                                 colors: colors1,
+                                totalIncome: totalIncome,
                               )
                             : MyImageCard(
                                 image: index == 1
                                     ? "assets/images/card_back$index.jpg"
                                     : "assets/images/card_back$index.png",
                                 totalBalance: totalBalance,
+                                totalIncome: totalIncome,
                               ),
                       );
                     },
@@ -182,47 +184,51 @@ class _HomePageState extends State<HomePage> {
                       //income
                       Expanded(
                         child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          padding: const EdgeInsets.only(
+                              top: 15, bottom: 15, left: 10),
                           decoration: BoxDecoration(
                             color: const Color(0xffe7fadf),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                decoration: const BoxDecoration(
-                                  color: Color(0xff9fef9a),
-                                  shape: BoxShape.circle,
-                                ),
-                                padding: const EdgeInsets.all(12),
-                                child: const Icon(
-                                  CupertinoIcons.arrow_up,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 15,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text("Total Incomes"),
-                                  Text(
-                                    "\$${totalIncome.toStringAsFixed(2)}",
-                                    style: GoogleFonts.lato(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.w900,
-                                    ),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xff9fef9a),
+                                    shape: BoxShape.circle,
                                   ),
-                                ],
-                              ),
-                            ],
+                                  padding: const EdgeInsets.all(12),
+                                  child: const Icon(
+                                    CupertinoIcons.arrow_up,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text("Total Incomes"),
+                                    Text(
+                                      "\$${totalIncome.toStringAsFixed(2)}",
+                                      style: GoogleFonts.lato(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                       const SizedBox(
-                        width: 15,
+                        width: 12,
                       ),
                       //expense
                       Expanded(
@@ -231,9 +237,10 @@ class _HomePageState extends State<HomePage> {
                             color: const Color(0xffffe3e3),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          padding: const EdgeInsets.only(
+                              top: 15, bottom: 15, left: 10),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
@@ -323,23 +330,26 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: EdgeInsets.only(
                   left: MediaQuery.of(context).size.width * 0.05,
-                  bottom: 10,
+                  bottom: 15,
                   right: MediaQuery.of(context).size.width * 0.05,
-                  top: 10),
+                  top: 15),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     "Transactions",
                     style: GoogleFonts.lato(
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
                     "VIEW ALL",
                     style: GoogleFonts.lato(
-                        fontSize: 16, fontWeight: FontWeight.bold),
+                      // fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.tertiary,
+                    ),
                   ),
                 ],
               ),
