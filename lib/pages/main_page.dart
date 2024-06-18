@@ -89,7 +89,7 @@ class _MainPageState extends State<MainPage> {
   double totalExpense = 0;
   double totalIncome = 0;
   double totalBalance = 0;
-  
+
   Widget _buildFloating() {
     categories = context.watch<ExpenseDatabase>().categories;
     pastDays = context.watch<ExpenseDatabase>().dates;
@@ -165,7 +165,14 @@ class _MainPageState extends State<MainPage> {
               String emoji = categoryParts[0];
               String categoryName = categoryParts.sublist(1).join(' ');
 
-              double amount = double.parse(amountController.text);
+              String inputText = amountController.text.replaceAll(',', '.');
+              late double amount;
+              try {
+                amount = double.parse(inputText);
+                print("Parsed amount: $amount");
+              } catch (e) {
+                print("Error parsing amount: $e");
+              }
               if (currentIndex == 0) {
                 try {
                   Expense ex = Expense(

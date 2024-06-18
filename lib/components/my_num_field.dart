@@ -60,7 +60,7 @@ class _MyNumFieldState extends State<MyNumField> {
               borderRadius: BorderRadius.circular(10),
             ),
             padding: const EdgeInsets.all(2),
-            child: TextField(
+            child: TextFormField(
               controller: widget.controller,
               autofocus: true,
               keyboardType:
