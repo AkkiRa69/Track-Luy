@@ -89,9 +89,9 @@ class _MainPageState extends State<MainPage> {
   double totalExpense = 0;
   double totalIncome = 0;
   double totalBalance = 0;
+  
   Widget _buildFloating() {
     categories = context.watch<ExpenseDatabase>().categories;
-
     pastDays = context.watch<ExpenseDatabase>().dates;
     return FloatingActionButton(
       shape: RoundedRectangleBorder(

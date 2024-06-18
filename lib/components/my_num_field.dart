@@ -68,8 +68,8 @@ class _MyNumFieldState extends State<MyNumField> {
               textInputAction: TextInputAction.next,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.allow(
-                  RegExp(r'^\d*\.?\d*'),
-                ),
+                  RegExp(r'^\d*[.,]?\d*'),
+                )
               ], // Only digits and a single dot are allowed
               style: TextStyle(
                 color: Theme.of(context).colorScheme.surface,
