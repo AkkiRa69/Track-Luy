@@ -29,7 +29,6 @@ class _ExpenseTileState extends State<ExpenseTile> {
   int currentIndex = 0;
   bool isSelected = false;
   List categories = [];
-  double totalBalance = 0;
 
   @override
   void dispose() {
@@ -39,6 +38,8 @@ class _ExpenseTileState extends State<ExpenseTile> {
     cateNameController.dispose();
     super.dispose();
   }
+
+  double totalBalance = 0;
 
   @override
   void initState() {
@@ -266,19 +267,13 @@ class _ExpenseTileState extends State<ExpenseTile> {
             String emoji = categoryParts[0];
             String categoryName = categoryParts.sublist(1).join(' ');
 
-            String inputText = amountController.text.replaceAll(',', '.');
-            late double amount;
-            try {
-              amount = double.parse(inputText);
-              print("Parsed amount: $amount");
-            } catch (e) {
-              print("Error parsing amount: $e");
-            }
+            // Parse and validate amount
+            double amount = double.parse(amountControllerModal.text);
             if (amount > totalBalance) {
-              showCupertinoAlert(
-                  context, "You don't have enough money to spend.");
+              showCupertinoAlert(context, "You don't have enough money.");
               return;
             }
+
             if (currentIndex == 0) {
               // Expense update case
               Expense ex = Expense(

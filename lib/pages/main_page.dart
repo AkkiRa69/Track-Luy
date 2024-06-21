@@ -168,7 +168,7 @@ class _MainPageState extends State<MainPage> {
               // Process the selected category
               List<String> categoryParts = selectedCategory.split(' ');
               if (categoryParts.length < 2) {
-                showInvalidAlert(context, 'Invalid category format.');
+                showCupertinoAlert(context, 'Invalid category format.');
                 return;
               }
 

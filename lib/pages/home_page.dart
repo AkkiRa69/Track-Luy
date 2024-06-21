@@ -43,8 +43,6 @@ class _HomePageState extends State<HomePage> {
   final PageController _pageController = PageController(viewportFraction: 1);
   final ScrollController _scrollController = ScrollController();
 
-  double totalExpense = 0;
-  double totalIncome = 0;
   double totalBalance = 0;
 
   bool _isFabVisible = false;
