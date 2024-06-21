@@ -6,6 +6,7 @@ import 'package:akkhara_tracker/components/my_text_field.dart';
 import 'package:akkhara_tracker/components/my_toggle_switch.dart';
 import 'package:akkhara_tracker/components/save_button.dart';
 import 'package:akkhara_tracker/models/expense_database.dart';
+import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,25 +28,24 @@ class AddTransactionSheet extends StatefulWidget {
   final List pastDays;
   final dynamic initDate;
 
-  const AddTransactionSheet({
-    super.key,
-    required this.currentIndex,
-    required this.onToggle,
-    required this.amountController,
-    required this.desController,
-    required this.emojiController,
-    required this.cateNameController,
-    required this.categories,
-    required this.onSelectedCategory,
-    required this.isSelected,
-    required this.selectedCategory,
-    required this.selectedDate,
-    required this.onSelectedDate,
-    required this.onSave,
-    required this.initilizeSelection,
-    required this.pastDays,
-    required this.initDate
-  });
+  const AddTransactionSheet(
+      {super.key,
+      required this.currentIndex,
+      required this.onToggle,
+      required this.amountController,
+      required this.desController,
+      required this.emojiController,
+      required this.cateNameController,
+      required this.categories,
+      required this.onSelectedCategory,
+      required this.isSelected,
+      required this.selectedCategory,
+      required this.selectedDate,
+      required this.onSelectedDate,
+      required this.onSave,
+      required this.initilizeSelection,
+      required this.pastDays,
+      required this.initDate});
 
   @override
   _AddTransactionSheetState createState() => _AddTransactionSheetState();
@@ -68,7 +68,9 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Padding(
-            padding: EdgeInsets.only(bottom: 15),
+            padding: EdgeInsets.only(
+              bottom: 20,
+            ),
             child: Text(
               "Add Transaction",
               style: TextStyle(
@@ -107,16 +109,15 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 6),
+          const Padding(
+            padding: EdgeInsets.only(bottom: 6),
             child: Row(
               children: [
                 Text(
                   "Category ",
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                  style: TextStyle(color: AppColors.text),
                 ),
-                const Text(
+                Text(
                   "*",
                   style: TextStyle(color: Colors.red),
                 ),
@@ -145,10 +146,10 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
             padding: const EdgeInsets.only(top: 6, bottom: 12),
             child: Row(
               children: [
-                Text(
+                const Text(
                   "Don't see a category you need?   ",
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: AppColors.text,
                   ),
                 ),
                 GestureDetector(
@@ -219,12 +220,12 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                       ),
                     );
                   },
-                  child: Text(
+                  child: const Text(
                     "+ Add category",
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondary,
+                      color: AppColors.text,
                       decoration: TextDecoration.underline,
-                      decorationColor: Theme.of(context).colorScheme.secondary,
+                      decorationColor: AppColors.text,
                       decorationThickness: 2,
                     ),
                   ),
@@ -232,13 +233,15 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
               ],
             ),
           ),
-          Row(
+          const Row(
             children: [
               Text(
                 "Date ",
-                style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                style: TextStyle(
+                  color: AppColors.text,
+                ),
               ),
-              const Text(
+              Text(
                 "*",
                 style: TextStyle(color: Colors.red),
               ),
@@ -252,7 +255,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
-                      color: Theme.of(context).colorScheme.tertiary,
+                      color: AppColors.grey,
                     ),
                   ),
                   child: MySelectDate(

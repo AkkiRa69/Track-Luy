@@ -1,3 +1,4 @@
+import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -39,7 +40,9 @@ class _MyNumFieldState extends State<MyNumField> {
             children: [
               Text(
                 "${widget.text} ",
-                style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                style: const TextStyle(
+                  color: AppColors.text,
+                ),
               ),
               const Text(
                 "*",
@@ -53,9 +56,7 @@ class _MyNumFieldState extends State<MyNumField> {
           Container(
             decoration: BoxDecoration(
               border: Border.all(
-                color: _showError
-                    ? Colors.red
-                    : Theme.of(context).colorScheme.tertiary,
+                color: _showError ? Colors.red : AppColors.grey,
               ),
               borderRadius: BorderRadius.circular(10),
             ),
@@ -71,8 +72,8 @@ class _MyNumFieldState extends State<MyNumField> {
                   RegExp(r'^\d*[.,]?\d*'),
                 )
               ], // Only digits and a single dot are allowed
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.surface,
+              style: const TextStyle(
+                color: Colors.white,
                 fontSize: 14,
               ),
               decoration: InputDecoration(
@@ -83,9 +84,9 @@ class _MyNumFieldState extends State<MyNumField> {
                 ),
                 contentPadding: const EdgeInsets.all(15),
                 hintText: widget.hintText,
-                hintStyle: TextStyle(
+                hintStyle: const TextStyle(
                   fontSize: 14,
-                  color: Theme.of(context).colorScheme.tertiary,
+                  color: AppColors.text,
                 ),
                 border: InputBorder.none,
               ),

@@ -1,3 +1,4 @@
+import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -13,7 +14,7 @@ class MyToggleSwitch extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         border: Border.all(
-          color: const Color(0xff2f2f2f),
+          color: AppColors.kindaBlack,
         ),
         borderRadius: BorderRadius.circular(50),
       ),
@@ -31,8 +32,8 @@ class MyToggleSwitch extends StatelessWidget {
               animationDuration: 200,
               curve: Curves.linearToEaseOut,
               activeBgColors: const [
-                [Color(0xff4e4d4d)],
-                [Color(0xff4e4d4d)]
+                [AppColors.kindaBlack],
+                [AppColors.kindaBlack]
               ],
               activeFgColor: Colors.white,
               inactiveBgColor: Colors.transparent,

@@ -49,6 +49,7 @@ dependencies:
   quickalert: ^1.1.0
   animated_bottom_navigation_bar: ^1.3.3
   font_awesome_flutter: ^10.7.0
+  fl_chart: ^0.68.0
 
 dev_dependencies:
   flutter_test:

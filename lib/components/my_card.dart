@@ -28,8 +28,7 @@ class MyCard extends StatelessWidget {
     percent = percent.clamp(0, 1);
 
     return Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.05),
+      margin: const EdgeInsets.symmetric(horizontal: 25),
       width: MediaQuery.of(context).size.width * 0.9,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
@@ -49,16 +48,14 @@ class MyCard extends StatelessWidget {
                 "\$${totalBalance.toStringAsFixed(2)}",
                 style: GoogleFonts.lato(
                   fontSize: 34,
-                  color: Theme.of(context).colorScheme.surface,
+                  color: Colors.white,
                   fontWeight: FontWeight.w900,
                 ),
               ),
               IconButton(
                 onPressed: () {},
-                icon: Icon(
-                  CupertinoIcons.ellipsis_vertical,
-                  color: Theme.of(context).colorScheme.surface,
-                ),
+                icon: const Icon(CupertinoIcons.ellipsis_vertical,
+                    color: Colors.white),
               ),
             ],
           ),
@@ -79,7 +76,7 @@ class MyCard extends StatelessWidget {
               barRadius: const Radius.circular(15),
               lineHeight: 5,
               percent: percent,
-              backgroundColor: Theme.of(context).colorScheme.tertiary,
+              backgroundColor: Colors.black54,
               linearGradient: const LinearGradient(
                 colors: [
                   Color(0xffff6041),
@@ -91,20 +88,22 @@ class MyCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
+              const Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     "****  ****  ****  ",
                     style: TextStyle(
-                        fontSize: 18,
-                        color: Theme.of(context).colorScheme.surface),
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
                   ),
                   Text(
                     "8888",
                     style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).colorScheme.surface),
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
                   ),
                 ],
               ),

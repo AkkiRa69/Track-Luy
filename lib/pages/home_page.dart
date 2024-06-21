@@ -6,6 +6,7 @@ import 'package:akkhara_tracker/components/my_image_card.dart';
 import 'package:akkhara_tracker/models/expense.dart';
 import 'package:akkhara_tracker/models/expense_database.dart';
 import 'package:akkhara_tracker/models/income.dart';
+import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -22,8 +23,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final List<Color> colors1 = [
-    const Color.fromARGB(255, 5, 19, 33),
-    const Color(0xff292d32),
+    const Color(0xff3a43f2),
+    const Color.fromARGB(255, 10, 96, 201),
+    // const Color.fromARGB(255, 7, 53, 100),
+    // const Color.fromARGB(255, 18, 65, 124),
   ];
 
   final List<Color> colors2 = [
@@ -82,9 +85,11 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.backGround,
       body: _buildBody(context),
       floatingActionButton: _isFabVisible
           ? FloatingActionButton(
+              backgroundColor: AppColors.kindaBlack,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(50),
               ),
@@ -117,6 +122,7 @@ class _HomePageState extends State<HomePage> {
     final totalIncome =
         context.watch<ExpenseDatabase>().calculateTotalIncome(incomes);
     totalBalance = totalIncome - totalExpense;
+    const style = TextStyle(color: Colors.white);
     return SafeArea(
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -126,7 +132,8 @@ class _HomePageState extends State<HomePage> {
           children: [
             // Custom app bar
             const Padding(
-              padding: EdgeInsets.only(right: 20, left: 5, top: 15, bottom: 30),
+              padding:
+                  EdgeInsets.only(right: 25, left: 25, top: 15, bottom: 30),
               child: CustomeAppBar(),
             ),
 
@@ -180,18 +187,18 @@ class _HomePageState extends State<HomePage> {
 
                 // Indicator
                 Padding(
-                  padding: const EdgeInsets.only(top: 15),
+                  padding: const EdgeInsets.symmetric(vertical: 20),
                   child: Center(
                     child: SmoothPageIndicator(
                       controller: _pageController,
                       count: 5,
-                      effect: ExpandingDotsEffect(
+                      effect: const ExpandingDotsEffect(
                         spacing: 5,
-                        dotColor: Theme.of(context).colorScheme.tertiary,
+                        dotColor: AppColors.kindaBlack,
                         radius: 10,
                         dotHeight: 8,
                         dotWidth: 8,
-                        activeDotColor: Theme.of(context).colorScheme.primary,
+                        activeDotColor: AppColors.blue,
                       ), // Customize the indicator effect
                     ),
                   ),
@@ -199,57 +206,49 @@ class _HomePageState extends State<HomePage> {
 
                 // Income and Expenses
                 Padding(
-                  padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.05,
-                      right: MediaQuery.of(context).size.width * 0.05,
-                      top: 15),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 25,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       //income
                       Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.only(
-                              top: 15, bottom: 15, left: 10),
-                          decoration: BoxDecoration(
-                            color: const Color(0xffe7fadf),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                color: AppColors.green,
+                                shape: BoxShape.circle,
+                              ),
+                              padding: const EdgeInsets.all(12),
+                              child: const Icon(
+                                CupertinoIcons.arrow_up,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xff9fef9a),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  padding: const EdgeInsets.all(12),
-                                  child: const Icon(
-                                    CupertinoIcons.arrow_up,
-                                  ),
+                                const Text(
+                                  "Total Incomes",
+                                  style: style,
                                 ),
-                                const SizedBox(
-                                  width: 15,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text("Total Incomes"),
-                                    Text(
-                                      "\$${totalIncome.toStringAsFixed(2)}",
-                                      style: GoogleFonts.lato(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    ),
-                                  ],
+                                Text(
+                                  "\$${totalIncome.toStringAsFixed(2)}",
+                                  style: GoogleFonts.lato(
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w900,
+                                  ),
                                 ),
                               ],
                             ),
-                          ),
+                          ],
                         ),
                       ),
                       const SizedBox(
@@ -257,45 +256,41 @@ class _HomePageState extends State<HomePage> {
                       ),
                       //expense
                       Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xffffe3e3),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          padding: const EdgeInsets.only(
-                              top: 15, bottom: 15, left: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                decoration: const BoxDecoration(
-                                  color: Color(0xfffd657a),
-                                  shape: BoxShape.circle,
-                                ),
-                                padding: const EdgeInsets.all(12),
-                                child: const Icon(
-                                  CupertinoIcons.arrow_down,
-                                ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                color: AppColors.red,
+                                shape: BoxShape.circle,
                               ),
-                              const SizedBox(
-                                width: 15,
+                              padding: const EdgeInsets.all(12),
+                              child: const Icon(
+                                CupertinoIcons.arrow_down,
                               ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text("Total Expenses"),
-                                  Text(
-                                    "\$${totalExpense.toStringAsFixed(2)}",
-                                    style: GoogleFonts.lato(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.w900,
-                                    ),
+                            ),
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Total Expenses",
+                                  style: style,
+                                ),
+                                Text(
+                                  "\$${totalExpense.toStringAsFixed(2)}",
+                                  style: GoogleFonts.lato(
+                                    fontSize: 22,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w900,
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -306,11 +301,7 @@ class _HomePageState extends State<HomePage> {
 
             //expense list
             Padding(
-              padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width * 0.05,
-                  bottom: 15,
-                  right: MediaQuery.of(context).size.width * 0.05,
-                  top: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -318,6 +309,7 @@ class _HomePageState extends State<HomePage> {
                     "Transactions",
                     style: GoogleFonts.lato(
                       fontSize: 18,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -325,7 +317,7 @@ class _HomePageState extends State<HomePage> {
                     "VIEW ALL",
                     style: GoogleFonts.lato(
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.tertiary,
+                      color: Colors.white,
                     ),
                   ),
                 ],
@@ -341,10 +333,8 @@ class _HomePageState extends State<HomePage> {
                 final transaction = combinedList[index];
                 if (transaction.isExpense) {
                   return Padding(
-                    padding: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width * 0.05,
-                        right: MediaQuery.of(context).size.width * 0.05,
-                        bottom: 15),
+                    padding:
+                        const EdgeInsets.only(left: 25, right: 25, bottom: 15),
                     child: ExpenseTile(
                       expense: transaction.data as Expense,
                     ),

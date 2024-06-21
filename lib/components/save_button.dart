@@ -9,7 +9,7 @@ class SaveButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(10),
       ),
       child: MaterialButton(
@@ -19,7 +19,13 @@ class SaveButton extends StatelessWidget {
         onPressed: onPreesed,
         child: Padding(
           padding: const EdgeInsets.all(12.0),
-          child: Text(text),
+          child: Text(
+            text,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       ),
     );

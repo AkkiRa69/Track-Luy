@@ -10,15 +10,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class IncomeTile extends StatefulWidget {
-  final Income income;
-  const IncomeTile({super.key, required this.income});
+class NewExpenseTile extends StatefulWidget {
+  final Expense expense;
+  const NewExpenseTile({super.key, required this.expense});
 
   @override
-  State<IncomeTile> createState() => _IncomeTileState();
+  State<NewExpenseTile> createState() => _NewExpenseTileState();
 }
 
-class _IncomeTileState extends State<IncomeTile> {
+class _NewExpenseTileState extends State<NewExpenseTile> {
   //for add trasaction
   TextEditingController amountController = TextEditingController();
   TextEditingController desController = TextEditingController();
@@ -26,7 +26,7 @@ class _IncomeTileState extends State<IncomeTile> {
   TextEditingController cateNameController = TextEditingController();
   String selectedCategory = '';
   DateTime selectedDate = DateTime.now();
-  int currentIndex = 1;
+  int currentIndex = 0;
   bool isSelected = false;
   List categories = [];
 
@@ -43,13 +43,13 @@ class _IncomeTileState extends State<IncomeTile> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    context.read<ExpenseDatabase>().readIncome();
+    context.read<ExpenseDatabase>().readExpenses();
   }
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: ValueKey(widget.income.id),
+      key: ValueKey(widget.expense.id),
       background: _buildDismissibleBackground(context, Alignment.centerLeft),
       secondaryBackground:
           _buildDismissibleBackground(context, Alignment.centerRight),
@@ -87,7 +87,7 @@ class _IncomeTileState extends State<IncomeTile> {
                   ),
                   padding: const EdgeInsets.all(15),
                   child: Text(
-                    widget.income.emoji,
+                    widget.expense.emoji,
                     style: const TextStyle(fontSize: 40),
                   ),
                 ),
@@ -100,7 +100,7 @@ class _IncomeTileState extends State<IncomeTile> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        widget.income.des,
+                        widget.expense.des,
                         textAlign: TextAlign.start,
                         overflow: TextOverflow.fade,
                         style: const TextStyle(
@@ -113,7 +113,7 @@ class _IncomeTileState extends State<IncomeTile> {
                         height: 3,
                       ),
                       Text(
-                        widget.income.name,
+                        widget.expense.name,
                         style: const TextStyle(
                           color: AppColors.grey,
                         ),
@@ -128,21 +128,22 @@ class _IncomeTileState extends State<IncomeTile> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '+\$${widget.income.amount.toStringAsFixed(2)}',
+                '-\$${widget.expense.amount.toStringAsFixed(2)}',
                 style: GoogleFonts.concertOne(
                   fontSize: 20,
-                  color: AppColors.green,
+                  color: AppColors.red,
                 ),
               ),
               const SizedBox(
                 height: 5,
               ),
               Text(
-                isToday(widget.income.date)
+                isToday(widget.expense.date)
                     ? "Today"
-                    : isYesterday(widget.income.date)
+                    : isYesterday(widget.expense.date)
                         ? "Yesterday"
-                        : DateFormat('MMM dd, EEEE').format(widget.income.date),
+                        : DateFormat('MMM dd, EEEE')
+                            .format(widget.expense.date),
                 style: const TextStyle(
                   color: AppColors.grey,
                 ),
@@ -192,8 +193,8 @@ class _IncomeTileState extends State<IncomeTile> {
   }
 
   void _handleDelete(BuildContext context) {
-    context.read<ExpenseDatabase>().deleteIncome(widget.income.id);
-    print("deleted ${widget.income.id}");
+    context.read<ExpenseDatabase>().deleteExpense(widget.expense.id);
+    print("deleted ${widget.expense.id}");
   }
 
   void _handleUpdate(BuildContext context) {
@@ -202,12 +203,12 @@ class _IncomeTileState extends State<IncomeTile> {
 
     // Initialize new controllers for modal sheet
     TextEditingController amountControllerModal =
-        TextEditingController(text: widget.income.amount.toStringAsFixed(2));
+        TextEditingController(text: widget.expense.amount.toStringAsFixed(2));
     TextEditingController desControllerModal =
-        TextEditingController(text: widget.income.des);
+        TextEditingController(text: widget.expense.des);
 
-    String cate = "${widget.income.emoji} ${widget.income.name}";
-    dynamic date = widget.income.date;
+    String cate = "${widget.expense.emoji} ${widget.expense.name}";
+    dynamic date = widget.expense.date;
     selectedCategory = cate;
     selectedDate = date;
 
@@ -273,8 +274,7 @@ class _IncomeTileState extends State<IncomeTile> {
               // Update the expense in the database
               await context
                   .read<ExpenseDatabase>()
-                  .deleteIncome(widget.income.id);
-              await context.read<ExpenseDatabase>().addExpense(ex);
+                  .updateExpense(widget.expense.id, ex);
 
               // Navigate back and clear fields
               Navigator.pop(context);
@@ -295,10 +295,10 @@ class _IncomeTileState extends State<IncomeTile> {
               );
 
               // Delete the expense and add income
-
               await context
                   .read<ExpenseDatabase>()
-                  .updateIncome(widget.income.id, income);
+                  .deleteExpense(widget.expense.id);
+              await context.read<ExpenseDatabase>().addIncome(income);
 
               // Navigate back and clear fields
               Navigator.pop(context);
@@ -322,20 +322,33 @@ class _IncomeTileState extends State<IncomeTile> {
     return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: const Text('Are you sure you want to delete this expense?'),
+        backgroundColor: AppColors.kindaBlack,
+        title: const Text(
+          'Confirm Delete',
+          style: TextStyle(color: Colors.white),
+        ),
+        content: const Text(
+          'Are you sure you want to delete this expense?',
+          style: TextStyle(color: Colors.white),
+        ),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(false);
             },
-            child: const Text('Cancel'),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(true);
             },
-            child: const Text('Delete'),
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: AppColors.red),
+            ),
           ),
         ],
       ),

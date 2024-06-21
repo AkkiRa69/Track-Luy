@@ -1,3 +1,4 @@
+import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -22,7 +23,7 @@ class MyEmojiField extends StatelessWidget {
           children: [
             Text(
               "$text ",
-              style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+              style: const TextStyle(color: AppColors.text),
             ),
             const Text(
               "*",
@@ -36,7 +37,7 @@ class MyEmojiField extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             border: Border.all(
-              color: Theme.of(context).colorScheme.tertiary,
+              color: AppColors.grey,
             ),
             borderRadius: BorderRadius.circular(10),
           ),

@@ -4,6 +4,8 @@ import 'package:akkhara_tracker/models/expense.dart';
 import 'package:akkhara_tracker/models/expense_database.dart';
 import 'package:akkhara_tracker/models/income.dart';
 import 'package:akkhara_tracker/pages/home_page.dart';
+import 'package:akkhara_tracker/pages/insight_page.dart';
+import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -18,7 +20,7 @@ class MainPage extends StatefulWidget {
 
 List _page = [
   const HomePage(),
-  const Scaffold(),
+  const InsightPage(),
   const Scaffold(),
   const Scaffold(),
 ];
@@ -28,6 +30,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _page[_bottomNavIndex],
+      backgroundColor: Colors.transparent,
       floatingActionButton: _buildFloating(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: _buildAnimatedBottomNavbar(),
@@ -45,7 +48,8 @@ class _MainPageState extends State<MainPage> {
 
   Widget _buildAnimatedBottomNavbar() {
     return AnimatedBottomNavigationBar.builder(
-      backgroundColor: const Color(0xfff5f5f5),
+      backgroundColor: AppColors.kindaBlack,
+      elevation: 0,
       height: 65,
       scaleFactor: 1.5,
       itemCount: iconList.length,
@@ -53,9 +57,7 @@ class _MainPageState extends State<MainPage> {
         return Icon(
           iconList[index],
           size: 20,
-          color: isActive
-              ? Theme.of(context).colorScheme.primary
-              : Colors.grey[500],
+          color: isActive ? Colors.white : AppColors.backGround,
         );
       },
       activeIndex: _bottomNavIndex,
@@ -93,7 +95,15 @@ class _MainPageState extends State<MainPage> {
   Widget _buildFloating() {
     categories = context.watch<ExpenseDatabase>().categories;
     pastDays = context.watch<ExpenseDatabase>().dates;
+     List<Expense> expenses = context.watch<ExpenseDatabase>().expenseList;
+    List<Income> incomes = context.watch<ExpenseDatabase>().incomeList;
+    final totalExpense =
+        context.watch<ExpenseDatabase>().calculateTotalExpense(expenses);
+    final totalIncome =
+        context.watch<ExpenseDatabase>().calculateTotalIncome(incomes);
+    totalBalance = totalIncome - totalExpense;
     return FloatingActionButton(
+      backgroundColor: AppColors.kindaBlack,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(50),
       ),
@@ -114,7 +124,7 @@ class _MainPageState extends State<MainPage> {
               topRight: Radius.circular(12),
             ),
           ),
-          barrierColor: Colors.black.withOpacity(0.7),
+          barrierColor: Colors.black.withOpacity(0.8),
           context: context,
           builder: (context) => AddTransactionSheet(
             currentIndex: currentIndex,
@@ -172,6 +182,11 @@ class _MainPageState extends State<MainPage> {
                 print("Parsed amount: $amount");
               } catch (e) {
                 print("Error parsing amount: $e");
+              }
+              if (amount > totalBalance) {
+                showCupertinoAlert(
+                    context, "You don't have enough money to spend.");
+                return;
               }
               if (currentIndex == 0) {
                 try {
@@ -237,7 +252,10 @@ class _MainPageState extends State<MainPage> {
           ),
         );
       },
-      child: const Icon(Icons.add),
+      child: const Icon(
+        Icons.add,
+        color: Colors.white,
+      ),
     );
   }
 }

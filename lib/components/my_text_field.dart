@@ -1,3 +1,4 @@
+import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class MyTextField extends StatefulWidget {
@@ -34,7 +35,9 @@ class _MyTextFieldState extends State<MyTextField> {
           children: [
             Text(
               "${widget.text} ",
-              style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+              style: const TextStyle(
+                color: AppColors.text,
+              ),
             ),
             const Text(
               "*",
@@ -48,9 +51,7 @@ class _MyTextFieldState extends State<MyTextField> {
         Container(
           decoration: BoxDecoration(
             border: Border.all(
-              color: _showError
-                  ? Colors.red
-                  : Theme.of(context).colorScheme.tertiary,
+              color: _showError ? Colors.red : AppColors.grey,
             ),
             borderRadius: BorderRadius.circular(10),
           ),
@@ -71,9 +72,9 @@ class _MyTextFieldState extends State<MyTextField> {
               ),
               contentPadding: const EdgeInsets.all(15),
               hintText: widget.hintText,
-              hintStyle: TextStyle(
+              hintStyle: const TextStyle(
                 fontSize: 14,
-                color: Theme.of(context).colorScheme.tertiary,
+                color: AppColors.text,
               ),
               border: InputBorder.none,
             ),

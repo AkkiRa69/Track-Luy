@@ -1,3 +1,4 @@
+import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class MySelectCategory extends StatelessWidget {
@@ -19,13 +20,14 @@ class MySelectCategory extends StatelessWidget {
     return DropdownMenu(
       initialSelection: initilizeSelection,
       menuStyle: MenuStyle(
-        backgroundColor: WidgetStatePropertyAll(Colors.black.withOpacity(0.7)),
+        alignment: Alignment.topCenter,
+        backgroundColor: WidgetStatePropertyAll(Colors.black.withOpacity(0.8)),
       ),
       inputDecorationTheme: InputDecorationTheme(
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.tertiary,
+          borderSide: const BorderSide(
+            color: AppColors.grey,
           ),
         ),
         contentPadding:
@@ -37,16 +39,16 @@ class MySelectCategory extends StatelessWidget {
         border: InputBorder.none,
       ),
       hintText: "Select category",
-      selectedTrailingIcon: Icon(
+      selectedTrailingIcon: const Icon(
         Icons.arrow_drop_up,
-        color: Theme.of(context).colorScheme.surface,
+        color: Colors.white,
       ),
-      trailingIcon: Icon(
+      trailingIcon: const Icon(
         Icons.arrow_drop_down_outlined,
-        color: Theme.of(context).colorScheme.surface,
+        color: Colors.white,
       ),
-      textStyle: TextStyle(
-        color: Theme.of(context).colorScheme.surface,
+      textStyle: const TextStyle(
+        color: Colors.white,
         fontSize: 14,
       ),
       width: MediaQuery.of(context).size.width * 0.92,

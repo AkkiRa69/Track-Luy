@@ -1,6 +1,5 @@
 import 'package:akkhara_tracker/models/expense_database.dart';
 import 'package:akkhara_tracker/pages/main_page.dart';
-import 'package:akkhara_tracker/theme/light_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,10 +16,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => ExpenseDatabase(),
-      child: MaterialApp(
+      child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: const MainPage(),
-        theme: lightMode,
+        home: MainPage(),
       ),
     );
   }

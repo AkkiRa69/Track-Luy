@@ -4,6 +4,7 @@ import 'package:akkhara_tracker/helper/my_alert.dart';
 import 'package:akkhara_tracker/models/expense.dart';
 import 'package:akkhara_tracker/models/expense_database.dart';
 import 'package:akkhara_tracker/models/income.dart';
+import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -28,6 +29,7 @@ class _ExpenseTileState extends State<ExpenseTile> {
   int currentIndex = 0;
   bool isSelected = false;
   List categories = [];
+  double totalBalance = 0;
 
   @override
   void dispose() {
@@ -47,6 +49,13 @@ class _ExpenseTileState extends State<ExpenseTile> {
 
   @override
   Widget build(BuildContext context) {
+    List<Expense> expenses = context.watch<ExpenseDatabase>().expenseList;
+    List<Income> incomes = context.watch<ExpenseDatabase>().incomeList;
+    final totalExpense =
+        context.watch<ExpenseDatabase>().calculateTotalExpense(expenses);
+    final totalIncome =
+        context.watch<ExpenseDatabase>().calculateTotalIncome(incomes);
+    totalBalance = totalIncome - totalExpense;
     return Dismissible(
       key: ValueKey(widget.expense.id),
       background: _buildDismissibleBackground(context, Alignment.centerLeft),
@@ -69,92 +78,87 @@ class _ExpenseTileState extends State<ExpenseTile> {
           _handleDelete(context);
         }
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xfff5f5f5),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.inversePrimary,
-                      shape: BoxShape.circle,
-                    ),
-                    padding: const EdgeInsets.all(18),
-                    child: Text(
-                      widget.expense.emoji,
-                      style: const TextStyle(fontSize: 28),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          widget.expense.des,
-                          textAlign: TextAlign.start,
-                          overflow: TextOverflow.fade,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 3,
-                        ),
-                        Text(
-                          widget.expense.name,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.tertiary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  '-\$${widget.expense.amount.toStringAsFixed(2)}',
-                  style: GoogleFonts.concertOne(
-                    fontSize: 20,
-                    color: const Color(0xfffd657a),
+                Container(
+                  decoration: const BoxDecoration(
+                    color: AppColors.kindaBlack,
+                    shape: BoxShape.circle,
+                    // borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.all(15),
+                  child: Text(
+                    widget.expense.emoji,
+                    style: const TextStyle(fontSize: 40),
                   ),
                 ),
                 const SizedBox(
-                  height: 5,
+                  width: 15,
                 ),
-                Text(
-                  isToday(widget.expense.date)
-                      ? "Today"
-                      : isYesterday(widget.expense.date)
-                          ? "Yesterday"
-                          : DateFormat('MMM dd, EEEE')
-                              .format(widget.expense.date),
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.tertiary,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        widget.expense.des,
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.fade,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 3,
+                      ),
+                      Text(
+                        widget.expense.name,
+                        style: const TextStyle(
+                          color: AppColors.grey,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                '-\$${widget.expense.amount.toStringAsFixed(2)}',
+                style: GoogleFonts.concertOne(
+                  fontSize: 20,
+                  color: AppColors.red,
+                ),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Text(
+                isToday(widget.expense.date)
+                    ? "Today"
+                    : isYesterday(widget.expense.date)
+                        ? "Yesterday"
+                        : DateFormat('MMM dd, EEEE')
+                            .format(widget.expense.date),
+                style: const TextStyle(
+                  color: AppColors.grey,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -262,9 +266,19 @@ class _ExpenseTileState extends State<ExpenseTile> {
             String emoji = categoryParts[0];
             String categoryName = categoryParts.sublist(1).join(' ');
 
-            // Parse and validate amount
-            double amount = double.parse(amountControllerModal.text);
-
+            String inputText = amountController.text.replaceAll(',', '.');
+            late double amount;
+            try {
+              amount = double.parse(inputText);
+              print("Parsed amount: $amount");
+            } catch (e) {
+              print("Error parsing amount: $e");
+            }
+            if (amount > totalBalance) {
+              showCupertinoAlert(
+                  context, "You don't have enough money to spend.");
+              return;
+            }
             if (currentIndex == 0) {
               // Expense update case
               Expense ex = Expense(
@@ -326,20 +340,33 @@ class _ExpenseTileState extends State<ExpenseTile> {
     return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: const Text('Are you sure you want to delete this expense?'),
+        backgroundColor: AppColors.kindaBlack,
+        title: const Text(
+          'Confirm Delete',
+          style: TextStyle(color: Colors.white),
+        ),
+        content: const Text(
+          'Are you sure you want to delete this expense?',
+          style: TextStyle(color: Colors.white),
+        ),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(false);
             },
-            child: const Text('Cancel'),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(true);
             },
-            child: const Text('Delete'),
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: AppColors.red),
+            ),
           ),
         ],
       ),

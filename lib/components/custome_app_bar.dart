@@ -1,3 +1,4 @@
+import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -11,11 +12,18 @@ class CustomeAppBar extends StatelessWidget {
       children: [
         Row(
           children: [
-            IconButton(
-              onPressed: () {},
-              icon: Image.asset(
-                "assets/icons/menu.png",
-                height: 30,
+            Container(
+              decoration: const BoxDecoration(
+                color: AppColors.kindaBlack,
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                onPressed: () {},
+                icon: Image.asset(
+                  "assets/icons/menu.png",
+                  height: 28,
+                  color: Colors.white,
+                ),
               ),
             ),
             const SizedBox(
@@ -26,11 +34,16 @@ class CustomeAppBar extends StatelessWidget {
               children: [
                 Text(
                   "Good morning,",
-                  style: GoogleFonts.lato(),
+                  style: GoogleFonts.lato(
+                    color: Colors.white,
+                  ),
                 ),
                 Text(
                   "Mr.Akkhara",
-                  style: GoogleFonts.concertOne(fontSize: 18),
+                  style: GoogleFonts.concertOne(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
                 ),
               ],
             ),
@@ -43,6 +56,7 @@ class CustomeAppBar extends StatelessWidget {
               icon: Image.asset(
                 "assets/icons/notification.png",
                 height: 30,
+                color: Colors.white,
               ),
             ),
             const SizedBox(
