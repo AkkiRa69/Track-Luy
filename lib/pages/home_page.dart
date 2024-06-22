@@ -85,6 +85,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: AppColors.backGround,
       body: _buildBody(context),
+      drawer: const Drawer(),
       floatingActionButton: _isFabVisible
           ? FloatingActionButton(
               backgroundColor: AppColors.kindaBlack,
@@ -129,10 +130,16 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Custom app bar
-            const Padding(
-              padding:
-                  EdgeInsets.only(right: 25, left: 25, top: 15, bottom: 30),
-              child: CustomeAppBar(),
+            Padding(
+              padding: const EdgeInsets.only(
+                  right: 25, left: 25, top: 15, bottom: 30),
+              child: Builder(builder: (context) {
+                return CustomeAppBar(
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                );
+              }),
             ),
 
             // Custom balance

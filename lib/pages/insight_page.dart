@@ -1,4 +1,5 @@
 import 'package:akkhara_tracker/components/charts/my_bar_chart1.dart';
+import 'package:akkhara_tracker/components/custome_app_bar.dart';
 import 'package:akkhara_tracker/components/new_expense_tile.dart';
 import 'package:akkhara_tracker/models/expense_database.dart';
 import 'package:akkhara_tracker/theme/app_colors.dart';
@@ -54,17 +55,6 @@ class _InsightPageState extends State<InsightPage> {
     double totalExpense =
         context.watch<ExpenseDatabase>().calculateTotalExpense(expenses);
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        title: const Text(
-          "Insight",
-          style: TextStyle(
-            fontSize: 24,
-            color: Colors.white,
-          ),
-        ),
-      ),
       floatingActionButton: _isFabVisible
           ? FloatingActionButton(
               backgroundColor: AppColors.kindaBlack,
@@ -95,6 +85,11 @@ class _InsightPageState extends State<InsightPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                child: CustomeAppBar(onPressed: () {}),
+              ),
               const Padding(
                 padding: EdgeInsets.only(top: 25, left: 25),
                 child: Text(

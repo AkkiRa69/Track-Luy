@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomeAppBar extends StatelessWidget {
-  const CustomeAppBar({super.key});
+  final void Function()? onPressed;
+  const CustomeAppBar({super.key,required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class CustomeAppBar extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: IconButton(
-                onPressed: () {},
+                onPressed: onPressed,
                 icon: Image.asset(
                   "assets/icons/menu.png",
                   height: 28,
