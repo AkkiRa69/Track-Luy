@@ -74,81 +74,92 @@ class _NewExpenseTileState extends State<NewExpenseTile> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.kindaBlack,
+              // shape: BoxShape.circle,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            padding: const EdgeInsets.all(15),
+            child: Text(
+              widget.expense.emoji,
+              style: const TextStyle(fontSize: 40),
+            ),
+          ),
+          const SizedBox(
+            width: 15,
+          ),
           Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
+            child: Column(
               children: [
-                Container(
-                  decoration: const BoxDecoration(
-                    color: AppColors.kindaBlack,
-                    shape: BoxShape.circle,
-                    // borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: const EdgeInsets.all(15),
-                  child: Text(
-                    widget.expense.emoji,
-                    style: const TextStyle(fontSize: 40),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          widget.expense.des,
+                          textAlign: TextAlign.start,
+                          overflow: TextOverflow.fade,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 3,
+                        ),
+                        Text(
+                          widget.expense.name,
+                          style: const TextStyle(
+                            color: AppColors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '-\$${widget.expense.amount.toStringAsFixed(2)}',
+                          style: GoogleFonts.concertOne(
+                            fontSize: 20,
+                            color: AppColors.red,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          isToday(widget.expense.date)
+                              ? "Today"
+                              : isYesterday(widget.expense.date)
+                                  ? "Yesterday"
+                                  : DateFormat('MMM dd, EEEE')
+                                      .format(widget.expense.date),
+                          style: const TextStyle(
+                            color: AppColors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
                 const SizedBox(
-                  width: 15,
+                  height: 10,
                 ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        widget.expense.des,
-                        textAlign: TextAlign.start,
-                        overflow: TextOverflow.fade,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 3,
-                      ),
-                      Text(
-                        widget.expense.name,
-                        style: const TextStyle(
-                          color: AppColors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
+                const Divider(
+                  indent: 10,
+                  endIndent: 10,
+                  thickness: 0.2,
+                  color: Colors.grey,
                 ),
               ],
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '-\$${widget.expense.amount.toStringAsFixed(2)}',
-                style: GoogleFonts.concertOne(
-                  fontSize: 20,
-                  color: AppColors.red,
-                ),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Text(
-                isToday(widget.expense.date)
-                    ? "Today"
-                    : isYesterday(widget.expense.date)
-                        ? "Yesterday"
-                        : DateFormat('MMM dd, EEEE')
-                            .format(widget.expense.date),
-                style: const TextStyle(
-                  color: AppColors.grey,
-                ),
-              ),
-            ],
           ),
         ],
       ),

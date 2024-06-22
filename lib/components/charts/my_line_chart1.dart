@@ -3,7 +3,16 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class MyLineChart1 extends StatefulWidget {
-  const MyLineChart1({super.key});
+  final List<FlSpot> spots;
+  final List<String> bottomTitles;
+  final List<String> leftTitles;
+
+  const MyLineChart1({
+    super.key,
+    required this.spots,
+    required this.bottomTitles,
+    required this.leftTitles,
+  });
 
   @override
   State<MyLineChart1> createState() => _MyLineChart1State();
@@ -63,19 +72,10 @@ class _MyLineChart1State extends State<MyLineChart1> {
       fontSize: 16,
     );
     Widget text;
-    switch (value.toInt()) {
-      case 2:
-        text = const Text('MAR', style: style);
-        break;
-      case 5:
-        text = const Text('JUN', style: style);
-        break;
-      case 8:
-        text = const Text('SEP', style: style);
-        break;
-      default:
-        text = const Text('', style: style);
-        break;
+    if (value.toInt() < widget.bottomTitles.length) {
+      text = Text(widget.bottomTitles[value.toInt()], style: style);
+    } else {
+      text = const Text('', style: style);
     }
 
     return SideTitleWidget(
@@ -90,18 +90,10 @@ class _MyLineChart1State extends State<MyLineChart1> {
       fontSize: 15,
     );
     String text;
-    switch (value.toInt()) {
-      case 1:
-        text = '10K';
-        break;
-      case 3:
-        text = '30k';
-        break;
-      case 5:
-        text = '50k';
-        break;
-      default:
-        return Container();
+    if (value.toInt() < widget.leftTitles.length) {
+      text = widget.leftTitles[value.toInt()];
+    } else {
+      text = '';
     }
 
     return Text(text, style: style, textAlign: TextAlign.left);
@@ -157,20 +149,12 @@ class _MyLineChart1State extends State<MyLineChart1> {
         border: Border.all(color: const Color(0xff37434d)),
       ),
       minX: 0,
-      maxX: 11,
+      maxX: widget.spots.isNotEmpty ? widget.spots.length - 1 : 11,
       minY: 0,
       maxY: 6,
       lineBarsData: [
         LineChartBarData(
-          spots: const [
-            FlSpot(0, 3),
-            FlSpot(2.6, 2),
-            FlSpot(4.9, 5),
-            FlSpot(6.8, 3.1),
-            FlSpot(8, 4),
-            FlSpot(9.5, 3),
-            FlSpot(11, 4),
-          ],
+          spots: widget.spots,
           isCurved: true,
           gradient: LinearGradient(
             colors: gradientColors,
@@ -249,15 +233,7 @@ class _MyLineChart1State extends State<MyLineChart1> {
       maxY: 6,
       lineBarsData: [
         LineChartBarData(
-          spots: const [
-            FlSpot(0, 3.44),
-            FlSpot(2.6, 3.44),
-            FlSpot(4.9, 3.44),
-            FlSpot(6.8, 3.44),
-            FlSpot(8, 3.44),
-            FlSpot(9.5, 3.44),
-            FlSpot(11, 3.44),
-          ],
+          spots: widget.spots.map((spot) => FlSpot(spot.x, 3.44)).toList(),
           isCurved: true,
           gradient: LinearGradient(
             colors: [

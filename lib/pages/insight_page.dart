@@ -1,5 +1,5 @@
 import 'package:akkhara_tracker/components/charts/my_bar_chart1.dart';
-import 'package:akkhara_tracker/components/expense_tile.dart';
+import 'package:akkhara_tracker/components/new_expense_tile.dart';
 import 'package:akkhara_tracker/models/expense_database.dart';
 import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -160,7 +160,7 @@ class _InsightPageState extends State<InsightPage> {
                   return Padding(
                     padding:
                         const EdgeInsets.only(left: 25, right: 25, bottom: 15),
-                    child: ExpenseTile(expense: expense),
+                    child: NewExpenseTile(expense: expense),
                   );
                 },
               ),

@@ -50,13 +50,13 @@ class _ExpenseTileState extends State<ExpenseTile> {
 
   @override
   Widget build(BuildContext context) {
-    List<Expense> expenses = context.watch<ExpenseDatabase>().expenseList;
-    List<Income> incomes = context.watch<ExpenseDatabase>().incomeList;
-    final totalExpense =
-        context.watch<ExpenseDatabase>().calculateTotalExpense(expenses);
-    final totalIncome =
-        context.watch<ExpenseDatabase>().calculateTotalIncome(incomes);
-    totalBalance = totalIncome - totalExpense;
+    // List<Expense> expenses = context.watch<ExpenseDatabase>().expenseList;
+    // List<Income> incomes = context.watch<ExpenseDatabase>().incomeList;
+    // final totalExpense =
+    //     context.watch<ExpenseDatabase>().calculateTotalExpense(expenses);
+    // final totalIncome =
+    //     context.watch<ExpenseDatabase>().calculateTotalIncome(incomes);
+    // totalBalance = totalIncome - totalExpense;
     return Dismissible(
       key: ValueKey(widget.expense.id),
       background: _buildDismissibleBackground(context, Alignment.centerLeft),
@@ -269,10 +269,10 @@ class _ExpenseTileState extends State<ExpenseTile> {
 
             // Parse and validate amount
             double amount = double.parse(amountControllerModal.text);
-            if (amount > totalBalance) {
-              showCupertinoAlert(context, "You don't have enough money.");
-              return;
-            }
+            // if (amount > totalBalance) {
+            //   showCupertinoAlert(context, "You don't have enough money.");
+            //   return;
+            // }
 
             if (currentIndex == 0) {
               // Expense update case
