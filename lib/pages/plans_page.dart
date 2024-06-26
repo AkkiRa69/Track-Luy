@@ -101,7 +101,7 @@ class _PlansPageState extends State<PlansPage> {
                 ),
                 const Gap(20),
                 SizedBox(
-                  height: 200,
+                  height: 205,
                   child: PageView.builder(
                     controller: _pageController,
                     itemCount: 10,
@@ -116,7 +116,7 @@ class _PlansPageState extends State<PlansPage> {
                           }
                           return Center(
                             child: SizedBox(
-                              height: Curves.easeOut.transform(value) * 200,
+                              height: Curves.easeOut.transform(value) * 205,
                               width: Curves.easeOut.transform(value) *
                                   MediaQuery.of(context).size.width *
                                   0.7,
