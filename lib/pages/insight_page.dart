@@ -1,6 +1,5 @@
 import 'package:akkhara_tracker/components/charts/my_bar_chart1.dart';
-import 'package:akkhara_tracker/components/custome_app_bar.dart';
-import 'package:akkhara_tracker/components/new_expense_tile.dart';
+import 'package:akkhara_tracker/components/widgets/new_expense_tile.dart';
 import 'package:akkhara_tracker/models/expense_database.dart';
 import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -88,10 +87,17 @@ class _InsightPageState extends State<InsightPage> {
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-                child: CustomeAppBar(onPressed: () {}),
+                child: Text(
+                  "Analytic",
+                  style: GoogleFonts.spaceGrotesk(
+                    color: Colors.white,
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
               const Padding(
-                padding: EdgeInsets.only(top: 25, left: 25),
+                padding: EdgeInsets.only(top: 15, left: 25),
                 child: Text(
                   "Total Expense",
                   style: TextStyle(

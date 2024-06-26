@@ -1,10 +1,11 @@
-import 'package:akkhara_tracker/components/add_trasaction_dialog.dart';
+import 'package:akkhara_tracker/components/widgets/add_trasaction_dialog.dart';
 import 'package:akkhara_tracker/helper/date_cal.dart';
 import 'package:akkhara_tracker/helper/my_alert.dart';
 import 'package:akkhara_tracker/models/expense.dart';
 import 'package:akkhara_tracker/models/expense_database.dart';
 import 'package:akkhara_tracker/models/income.dart';
 import 'package:akkhara_tracker/theme/app_colors.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -50,13 +51,6 @@ class _ExpenseTileState extends State<ExpenseTile> {
 
   @override
   Widget build(BuildContext context) {
-    // List<Expense> expenses = context.watch<ExpenseDatabase>().expenseList;
-    // List<Income> incomes = context.watch<ExpenseDatabase>().incomeList;
-    // final totalExpense =
-    //     context.watch<ExpenseDatabase>().calculateTotalExpense(expenses);
-    // final totalIncome =
-    //     context.watch<ExpenseDatabase>().calculateTotalIncome(incomes);
-    // totalBalance = totalIncome - totalExpense;
     return Dismissible(
       key: ValueKey(widget.expense.id),
       background: _buildDismissibleBackground(context, Alignment.centerLeft),
@@ -260,7 +254,7 @@ class _ExpenseTileState extends State<ExpenseTile> {
             // Validate category format
             List<String> categoryParts = selectedCategory.split(' ');
             if (categoryParts.length < 2) {
-              showInvalidAlert(context, 'Invalid category format.');
+              showCupertinoAlert(context, 'Invalid category format.');
               return;
             }
 
@@ -269,10 +263,10 @@ class _ExpenseTileState extends State<ExpenseTile> {
 
             // Parse and validate amount
             double amount = double.parse(amountControllerModal.text);
-            // if (amount > totalBalance) {
-            //   showCupertinoAlert(context, "You don't have enough money.");
-            //   return;
-            // }
+            if (amount > totalBalance) {
+              showCupertinoAlert(context, "You don't have enough money.");
+              return;
+            }
 
             if (currentIndex == 0) {
               // Expense update case
@@ -332,35 +326,32 @@ class _ExpenseTileState extends State<ExpenseTile> {
   }
 
   Future<bool?> _showDeleteConfirmationDialog(BuildContext context) {
-    return showDialog<bool>(
+    return showCupertinoDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.kindaBlack,
+      builder: (context) => CupertinoAlertDialog(
         title: const Text(
           'Confirm Delete',
-          style: TextStyle(color: Colors.white),
         ),
         content: const Text(
           'Are you sure you want to delete this expense?',
-          style: TextStyle(color: Colors.white),
         ),
         actions: [
-          TextButton(
+          CupertinoDialogAction(
             onPressed: () {
               Navigator.of(context).pop(false);
             },
             child: const Text(
               'Cancel',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.blue),
             ),
           ),
-          TextButton(
+          CupertinoDialogAction(
             onPressed: () {
               Navigator.of(context).pop(true);
             },
+            isDestructiveAction: true,
             child: const Text(
               'Delete',
-              style: TextStyle(color: AppColors.red),
             ),
           ),
         ],

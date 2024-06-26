@@ -20,7 +20,6 @@ class MySelectCategory extends StatelessWidget {
     return DropdownMenu(
       initialSelection: initilizeSelection,
       menuStyle: MenuStyle(
-        alignment: Alignment.topCenter,
         backgroundColor: WidgetStatePropertyAll(Colors.black.withOpacity(0.8)),
       ),
       inputDecorationTheme: InputDecorationTheme(

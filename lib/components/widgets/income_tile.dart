@@ -1,10 +1,11 @@
-import 'package:akkhara_tracker/components/add_trasaction_dialog.dart';
+import 'package:akkhara_tracker/components/widgets/add_trasaction_dialog.dart';
 import 'package:akkhara_tracker/helper/date_cal.dart';
 import 'package:akkhara_tracker/helper/my_alert.dart';
 import 'package:akkhara_tracker/models/expense.dart';
 import 'package:akkhara_tracker/models/expense_database.dart';
 import 'package:akkhara_tracker/models/income.dart';
 import 'package:akkhara_tracker/theme/app_colors.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -319,23 +320,33 @@ class _IncomeTileState extends State<IncomeTile> {
   }
 
   Future<bool?> _showDeleteConfirmationDialog(BuildContext context) {
-    return showDialog<bool>(
+    return showCupertinoDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: const Text('Are you sure you want to delete this expense?'),
+      builder: (context) => CupertinoAlertDialog(
+        title: const Text(
+          'Confirm Delete',
+        ),
+        content: const Text(
+          'Are you sure you want to delete this income?',
+        ),
         actions: [
-          TextButton(
+          CupertinoDialogAction(
             onPressed: () {
               Navigator.of(context).pop(false);
             },
-            child: const Text('Cancel'),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.blue),
+            ),
           ),
-          TextButton(
+          CupertinoDialogAction(
             onPressed: () {
               Navigator.of(context).pop(true);
             },
-            child: const Text('Delete'),
+            isDestructiveAction: true,
+            child: const Text(
+              'Delete',
+            ),
           ),
         ],
       ),

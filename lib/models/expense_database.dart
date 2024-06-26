@@ -1,3 +1,4 @@
+import 'dart:core';
 import 'dart:io';
 
 import 'package:akkhara_tracker/models/category.dart';
@@ -18,7 +19,7 @@ class ExpenseDatabase extends ChangeNotifier {
       [
         ExpenseSchema,
         IncomeSchema,
-        CategorySchema
+        CategoriSchema
       ], // Ensure ExpenseSchema is correctly defined
       directory: dir.path,
     );
@@ -61,11 +62,11 @@ class ExpenseDatabase extends ChangeNotifier {
 
   Future<void> addCategory(String emoji, String name) async {
     // Create and save the category object
-    Category cate = Category()
+    Categori cate = Categori()
       ..emoji = emoji
       ..name = name;
 
-    await isar.writeTxn(() => isar.categorys.put(cate));
+    await isar.writeTxn(() => isar.categoris.put(cate));
 
     // Add the new category to the list in the required format
     _categories.add('$emoji $name');
@@ -73,7 +74,7 @@ class ExpenseDatabase extends ChangeNotifier {
   }
 
   Future<void> readCate() async {
-    List<Category> cates = await isar.categorys.where().findAll();
+    List<Categori> cates = await isar.categoris.where().findAll();
 
     // Clear the list and add predefined categories
     _categories.clear();
@@ -192,7 +193,7 @@ class ExpenseDatabase extends ChangeNotifier {
         name: 'Initial Income',
         amount: 100.0,
         date: DateTime.now(),
-        des: 'Initial Income entry my guy',
+        des: 'Initial Income',
         emoji: '💰',
       );
       await addIncome(initialIncome);

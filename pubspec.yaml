@@ -50,6 +50,9 @@ dependencies:
   animated_bottom_navigation_bar: ^1.3.3
   font_awesome_flutter: ^10.7.0
   fl_chart: ^0.68.0
+  flutter_swipe_button: ^2.1.3
+  gap: ^3.0.1
+  
 
 dev_dependencies:
   flutter_test:
@@ -80,6 +83,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/icons/income.png
+    - assets/subscriptions/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -1,10 +1,11 @@
-import 'package:akkhara_tracker/components/add_trasaction_dialog.dart';
+import 'package:akkhara_tracker/components/widgets/add_trasaction_dialog.dart';
 import 'package:akkhara_tracker/helper/my_alert.dart';
 import 'package:akkhara_tracker/models/expense.dart';
 import 'package:akkhara_tracker/models/expense_database.dart';
 import 'package:akkhara_tracker/models/income.dart';
 import 'package:akkhara_tracker/pages/home_page.dart';
 import 'package:akkhara_tracker/pages/insight_page.dart';
+import 'package:akkhara_tracker/pages/plans_page.dart';
 import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class MainPage extends StatefulWidget {
 List _page = [
   const HomePage(),
   const InsightPage(),
-  const Scaffold(),
+  const PlansPage(),
   const Scaffold(),
 ];
 
@@ -95,7 +96,7 @@ class _MainPageState extends State<MainPage> {
   Widget _buildFloating() {
     categories = context.watch<ExpenseDatabase>().categories;
     pastDays = context.watch<ExpenseDatabase>().dates;
-     List<Expense> expenses = context.watch<ExpenseDatabase>().expenseList;
+    List<Expense> expenses = context.watch<ExpenseDatabase>().expenseList;
     List<Income> incomes = context.watch<ExpenseDatabase>().incomeList;
     final totalExpense =
         context.watch<ExpenseDatabase>().calculateTotalExpense(expenses);
@@ -154,7 +155,7 @@ class _MainPageState extends State<MainPage> {
                 });
               }
             },
-            onSave: () {
+            onSave: () async {
               if (isSelected == false) {
                 selectedCategory = categories.last;
                 // print("last$selectedCategory");
@@ -182,6 +183,8 @@ class _MainPageState extends State<MainPage> {
                 print("Parsed amount: $amount");
               } catch (e) {
                 print("Error parsing amount: $e");
+                showCupertinoAlert(context, 'Invalid amount format.');
+                return;
               }
               if (amount > totalBalance) {
                 showCupertinoAlert(
@@ -199,16 +202,14 @@ class _MainPageState extends State<MainPage> {
                   );
 
                   // Add the Expense to the database
-                  context.read<ExpenseDatabase>().addExpense(ex);
+                  await context.read<ExpenseDatabase>().addExpense(ex);
 
                   // Navigate back
                   Navigator.pop(context);
                   amountController.clear();
                   desController.clear();
-                  categoryName = "";
-                  selectedCategory = '';
-                  emoji = "";
-                  selectedDate = DateTime.now();
+                  selectedCategory = categories.last; // Reset to last category
+                  selectedDate = pastDays.first; // Reset to initial date
                 } catch (e) {
                   // Show error message using SnackBar
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -218,7 +219,7 @@ class _MainPageState extends State<MainPage> {
               }
               if (currentIndex == 1) {
                 try {
-                  // Create the Expense object
+                  // Create the Income object
                   Income income = Income(
                     name: categoryName,
                     amount: amount,
@@ -227,17 +228,16 @@ class _MainPageState extends State<MainPage> {
                     emoji: emoji,
                   );
 
-                  // Add the Expense to the database
-                  context.read<ExpenseDatabase>().addIncome(income);
+                  // Add the Income to the database
+                  await context.read<ExpenseDatabase>().addIncome(income);
+                  print('added luy = $amount');
 
                   // Navigate back
                   Navigator.pop(context);
                   amountController.clear();
                   desController.clear();
-                  categoryName = "";
-                  emoji = "";
-                  selectedCategory = '';
-                  selectedDate = DateTime.now();
+                  selectedCategory = categories.last; // Reset to last category
+                  selectedDate = pastDays.first; // Reset to initial date
                 } catch (e) {
                   // Show error message using SnackBar
                   ScaffoldMessenger.of(context).showSnackBar(

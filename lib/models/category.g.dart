@@ -9,13 +9,13 @@ part of 'category.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetCategoryCollection on Isar {
-  IsarCollection<Category> get categorys => this.collection();
+extension GetCategoriCollection on Isar {
+  IsarCollection<Categori> get categoris => this.collection();
 }
 
-const CategorySchema = CollectionSchema(
-  name: r'Category',
-  id: 5751694338128944171,
+const CategoriSchema = CollectionSchema(
+  name: r'Categori',
+  id: 99108900613094373,
   properties: {
     r'emoji': PropertySchema(
       id: 0,
@@ -28,22 +28,22 @@ const CategorySchema = CollectionSchema(
       type: IsarType.string,
     )
   },
-  estimateSize: _categoryEstimateSize,
-  serialize: _categorySerialize,
-  deserialize: _categoryDeserialize,
-  deserializeProp: _categoryDeserializeProp,
+  estimateSize: _categoriEstimateSize,
+  serialize: _categoriSerialize,
+  deserialize: _categoriDeserialize,
+  deserializeProp: _categoriDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {},
   embeddedSchemas: {},
-  getId: _categoryGetId,
-  getLinks: _categoryGetLinks,
-  attach: _categoryAttach,
+  getId: _categoriGetId,
+  getLinks: _categoriGetLinks,
+  attach: _categoriAttach,
   version: '3.1.0+1',
 );
 
-int _categoryEstimateSize(
-  Category object,
+int _categoriEstimateSize(
+  Categori object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -53,8 +53,8 @@ int _categoryEstimateSize(
   return bytesCount;
 }
 
-void _categorySerialize(
-  Category object,
+void _categoriSerialize(
+  Categori object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -63,20 +63,20 @@ void _categorySerialize(
   writer.writeString(offsets[1], object.name);
 }
 
-Category _categoryDeserialize(
+Categori _categoriDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = Category();
+  final object = Categori();
   object.emoji = reader.readString(offsets[0]);
   object.id = id;
   object.name = reader.readString(offsets[1]);
   return object;
 }
 
-P _categoryDeserializeProp<P>(
+P _categoriDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -92,28 +92,28 @@ P _categoryDeserializeProp<P>(
   }
 }
 
-Id _categoryGetId(Category object) {
+Id _categoriGetId(Categori object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _categoryGetLinks(Category object) {
+List<IsarLinkBase<dynamic>> _categoriGetLinks(Categori object) {
   return [];
 }
 
-void _categoryAttach(IsarCollection<dynamic> col, Id id, Category object) {
+void _categoriAttach(IsarCollection<dynamic> col, Id id, Categori object) {
   object.id = id;
 }
 
-extension CategoryQueryWhereSort on QueryBuilder<Category, Category, QWhere> {
-  QueryBuilder<Category, Category, QAfterWhere> anyId() {
+extension CategoriQueryWhereSort on QueryBuilder<Categori, Categori, QWhere> {
+  QueryBuilder<Categori, Categori, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension CategoryQueryWhere on QueryBuilder<Category, Category, QWhereClause> {
-  QueryBuilder<Category, Category, QAfterWhereClause> idEqualTo(Id id) {
+extension CategoriQueryWhere on QueryBuilder<Categori, Categori, QWhereClause> {
+  QueryBuilder<Categori, Categori, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -122,7 +122,7 @@ extension CategoryQueryWhere on QueryBuilder<Category, Category, QWhereClause> {
     });
   }
 
-  QueryBuilder<Category, Category, QAfterWhereClause> idNotEqualTo(Id id) {
+  QueryBuilder<Categori, Categori, QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -144,7 +144,7 @@ extension CategoryQueryWhere on QueryBuilder<Category, Category, QWhereClause> {
     });
   }
 
-  QueryBuilder<Category, Category, QAfterWhereClause> idGreaterThan(Id id,
+  QueryBuilder<Categori, Categori, QAfterWhereClause> idGreaterThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -153,7 +153,7 @@ extension CategoryQueryWhere on QueryBuilder<Category, Category, QWhereClause> {
     });
   }
 
-  QueryBuilder<Category, Category, QAfterWhereClause> idLessThan(Id id,
+  QueryBuilder<Categori, Categori, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -162,7 +162,7 @@ extension CategoryQueryWhere on QueryBuilder<Category, Category, QWhereClause> {
     });
   }
 
-  QueryBuilder<Category, Category, QAfterWhereClause> idBetween(
+  QueryBuilder<Categori, Categori, QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -179,9 +179,9 @@ extension CategoryQueryWhere on QueryBuilder<Category, Category, QWhereClause> {
   }
 }
 
-extension CategoryQueryFilter
-    on QueryBuilder<Category, Category, QFilterCondition> {
-  QueryBuilder<Category, Category, QAfterFilterCondition> emojiEqualTo(
+extension CategoriQueryFilter
+    on QueryBuilder<Categori, Categori, QFilterCondition> {
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> emojiEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -194,7 +194,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> emojiGreaterThan(
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> emojiGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -209,7 +209,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> emojiLessThan(
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> emojiLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -224,7 +224,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> emojiBetween(
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> emojiBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -243,7 +243,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> emojiStartsWith(
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> emojiStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -256,7 +256,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> emojiEndsWith(
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> emojiEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -269,7 +269,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> emojiContains(
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> emojiContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -281,7 +281,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> emojiMatches(
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> emojiMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -293,7 +293,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> emojiIsEmpty() {
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> emojiIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'emoji',
@@ -302,7 +302,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> emojiIsNotEmpty() {
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> emojiIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'emoji',
@@ -311,7 +311,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> idEqualTo(Id value) {
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -320,7 +320,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> idGreaterThan(
     Id value, {
     bool include = false,
   }) {
@@ -333,7 +333,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> idLessThan(
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> idLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -346,7 +346,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> idBetween(
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -363,7 +363,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> nameEqualTo(
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> nameEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -376,7 +376,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> nameGreaterThan(
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> nameGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -391,7 +391,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> nameLessThan(
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> nameLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -406,7 +406,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> nameBetween(
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> nameBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -425,7 +425,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> nameStartsWith(
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> nameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -438,7 +438,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> nameEndsWith(
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> nameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -451,7 +451,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> nameContains(
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> nameContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -463,7 +463,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> nameMatches(
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> nameMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -475,7 +475,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> nameIsEmpty() {
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> nameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'name',
@@ -484,7 +484,7 @@ extension CategoryQueryFilter
     });
   }
 
-  QueryBuilder<Category, Category, QAfterFilterCondition> nameIsNotEmpty() {
+  QueryBuilder<Categori, Categori, QAfterFilterCondition> nameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'name',
@@ -494,87 +494,87 @@ extension CategoryQueryFilter
   }
 }
 
-extension CategoryQueryObject
-    on QueryBuilder<Category, Category, QFilterCondition> {}
+extension CategoriQueryObject
+    on QueryBuilder<Categori, Categori, QFilterCondition> {}
 
-extension CategoryQueryLinks
-    on QueryBuilder<Category, Category, QFilterCondition> {}
+extension CategoriQueryLinks
+    on QueryBuilder<Categori, Categori, QFilterCondition> {}
 
-extension CategoryQuerySortBy on QueryBuilder<Category, Category, QSortBy> {
-  QueryBuilder<Category, Category, QAfterSortBy> sortByEmoji() {
+extension CategoriQuerySortBy on QueryBuilder<Categori, Categori, QSortBy> {
+  QueryBuilder<Categori, Categori, QAfterSortBy> sortByEmoji() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'emoji', Sort.asc);
     });
   }
 
-  QueryBuilder<Category, Category, QAfterSortBy> sortByEmojiDesc() {
+  QueryBuilder<Categori, Categori, QAfterSortBy> sortByEmojiDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'emoji', Sort.desc);
     });
   }
 
-  QueryBuilder<Category, Category, QAfterSortBy> sortByName() {
+  QueryBuilder<Categori, Categori, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<Category, Category, QAfterSortBy> sortByNameDesc() {
+  QueryBuilder<Categori, Categori, QAfterSortBy> sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
 }
 
-extension CategoryQuerySortThenBy
-    on QueryBuilder<Category, Category, QSortThenBy> {
-  QueryBuilder<Category, Category, QAfterSortBy> thenByEmoji() {
+extension CategoriQuerySortThenBy
+    on QueryBuilder<Categori, Categori, QSortThenBy> {
+  QueryBuilder<Categori, Categori, QAfterSortBy> thenByEmoji() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'emoji', Sort.asc);
     });
   }
 
-  QueryBuilder<Category, Category, QAfterSortBy> thenByEmojiDesc() {
+  QueryBuilder<Categori, Categori, QAfterSortBy> thenByEmojiDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'emoji', Sort.desc);
     });
   }
 
-  QueryBuilder<Category, Category, QAfterSortBy> thenById() {
+  QueryBuilder<Categori, Categori, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<Category, Category, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<Categori, Categori, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<Category, Category, QAfterSortBy> thenByName() {
+  QueryBuilder<Categori, Categori, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<Category, Category, QAfterSortBy> thenByNameDesc() {
+  QueryBuilder<Categori, Categori, QAfterSortBy> thenByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
 }
 
-extension CategoryQueryWhereDistinct
-    on QueryBuilder<Category, Category, QDistinct> {
-  QueryBuilder<Category, Category, QDistinct> distinctByEmoji(
+extension CategoriQueryWhereDistinct
+    on QueryBuilder<Categori, Categori, QDistinct> {
+  QueryBuilder<Categori, Categori, QDistinct> distinctByEmoji(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'emoji', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<Category, Category, QDistinct> distinctByName(
+  QueryBuilder<Categori, Categori, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
@@ -582,21 +582,21 @@ extension CategoryQueryWhereDistinct
   }
 }
 
-extension CategoryQueryProperty
-    on QueryBuilder<Category, Category, QQueryProperty> {
-  QueryBuilder<Category, int, QQueryOperations> idProperty() {
+extension CategoriQueryProperty
+    on QueryBuilder<Categori, Categori, QQueryProperty> {
+  QueryBuilder<Categori, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<Category, String, QQueryOperations> emojiProperty() {
+  QueryBuilder<Categori, String, QQueryOperations> emojiProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'emoji');
     });
   }
 
-  QueryBuilder<Category, String, QQueryOperations> nameProperty() {
+  QueryBuilder<Categori, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
     });

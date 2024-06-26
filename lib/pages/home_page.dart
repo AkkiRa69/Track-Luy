@@ -1,8 +1,8 @@
-import 'package:akkhara_tracker/components/custome_app_bar.dart';
-import 'package:akkhara_tracker/components/expense_tile.dart';
-import 'package:akkhara_tracker/components/income_tile.dart';
-import 'package:akkhara_tracker/components/my_card.dart';
-import 'package:akkhara_tracker/components/my_image_card.dart';
+import 'package:akkhara_tracker/components/widgets/custome_app_bar.dart';
+import 'package:akkhara_tracker/components/widgets/expense_tile.dart';
+import 'package:akkhara_tracker/components/widgets/income_tile.dart';
+import 'package:akkhara_tracker/components/widgets/my_card.dart';
+import 'package:akkhara_tracker/components/widgets/my_image_card.dart';
 import 'package:akkhara_tracker/models/expense.dart';
 import 'package:akkhara_tracker/models/expense_database.dart';
 import 'package:akkhara_tracker/models/income.dart';
@@ -318,13 +318,13 @@ class _HomePageState extends State<HomePage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
-                    "VIEW ALL",
-                    style: GoogleFonts.lato(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
+                  // Text(
+                  //   "VIEW ALL",
+                  //   style: GoogleFonts.lato(
+                  //     fontWeight: FontWeight.bold,
+                  //     color: Colors.white,
+                  //   ),
+                  // ),
                 ],
               ),
             ),
