@@ -1,8 +1,15 @@
-import 'package:akkhara_tracker/components/widgets/subscription_tile.dart';
+import 'package:akkhara_tracker/components/widgets/sub%20widget/sub_bill.dart';
+import 'package:akkhara_tracker/components/widgets/sub%20widget/subscription_tile.dart';
+import 'package:akkhara_tracker/components/widgets/sub%20widget/subscriptions.dart';
+import 'package:akkhara_tracker/components/widgets/sub%20widget/tiny_sub_tile.dart';
+import 'package:akkhara_tracker/components/widgets/sub%20widget/trending_tile.dart';
+import 'package:akkhara_tracker/models/subscription.dart';
+import 'package:akkhara_tracker/models/subscription_database.dart';
 import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class PlansPage extends StatefulWidget {
   const PlansPage({super.key});
@@ -12,7 +19,26 @@ class PlansPage extends StatefulWidget {
 }
 
 class _PlansPageState extends State<PlansPage> {
-  final PageController _pageController = PageController(viewportFraction: 0.7);
+  late PageController _pageController;
+  // final List<Widget> trending = [
+  //   for (int i = 0; i < 10; i++)
+  //     TrendingTile(
+  //       gap: 20,
+  //       title: "Netflix",
+  //       price: 6.99,
+  //       image: 'assets/subscriptions/netflix.png',
+  //       onPressed: () {},
+  //     ),
+  // ];
+  final List<Widget> subscription = [
+    for (int i = 0; i < 10; i++)
+      SubscriptionTile(
+        title: "Netflix",
+        price: 6.99,
+        image: 'assets/subscriptions/netflix.png',
+        onPressed: () {},
+      ),
+  ];
 
   @override
   void dispose() {
@@ -21,13 +47,26 @@ class _PlansPageState extends State<PlansPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(
+      viewportFraction: 0.7,
+      initialPage: subscription.length,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final subList = context.watch<SubscriptionDatabase>().subList;
+    // final trendingList = subList.take(4).toList();
+
     return Scaffold(
       backgroundColor: AppColors.backGround,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(top: 15),
           child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -73,50 +112,76 @@ class _PlansPageState extends State<PlansPage> {
                     ],
                   ),
                 ),
-                const Gap(30),
 
-                //List of subscription
-                const Gap(20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                //bill to pay
+                const Gap(40),
+                const SubBill(),
+
+                //tiny sub tile
+                const Gap(10),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 25),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "Subscriptions",
-                        style: GoogleFonts.spaceGrotesk(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                      Expanded(
+                        child: TinySubTile(
+                          title: 'Active subs',
+                          subTitle: '12',
+                          color: Colors.orange,
                         ),
                       ),
-                      const Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.white,
-                        size: 20,
+                      Gap(10),
+                      Expanded(
+                        child: TinySubTile(
+                          title: 'Highest subs',
+                          subTitle: '\$19.99',
+                          color: Colors.blue,
+                        ),
+                      ),
+                      Gap(10),
+                      Expanded(
+                        child: TinySubTile(
+                          title: 'Lowest subs',
+                          subTitle: '\$5.99',
+                          color: Colors.green,
+                        ),
                       ),
                     ],
                   ),
                 ),
+
+                //List of subscription
+                const Gap(35),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Text(
+                    "Your Subscriptions",
+                    style: GoogleFonts.spaceGrotesk(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
                 const Gap(20),
                 SizedBox(
-                  height: 205,
+                  height: 220,
                   child: PageView.builder(
                     controller: _pageController,
-                    itemCount: 10,
+                    itemCount: subscription.length * 2,
                     itemBuilder: (context, index) {
+                      int actualIndex = index % subscription.length;
                       return AnimatedBuilder(
                         animation: _pageController,
                         builder: (context, child) {
-                          double value = 0;
+                          double value = 0.8;
                           if (_pageController.position.haveDimensions) {
                             value = _pageController.page! - index;
                             value = (1 - (value.abs() * 0.3)).clamp(0.0, 1.0);
                           }
                           return Center(
                             child: SizedBox(
-                              height: Curves.easeOut.transform(value) * 205,
+                              height: Curves.easeOut.transform(value) * 220,
                               width: Curves.easeOut.transform(value) *
                                   MediaQuery.of(context).size.width *
                                   0.7,
@@ -124,40 +189,28 @@ class _PlansPageState extends State<PlansPage> {
                             ),
                           );
                         },
-                        child: SubscriptionTile(
-                          gap: 20,
-                          title: "Netflix",
-                          price: 5.99,
-                          image: 'assets/subscriptions/spotify.png',
-                          onPressed: () {},
-                        ),
+                        child: subscription[actualIndex],
                       );
+                    },
+                    onPageChanged: (index) {
+                      if (index == subscription.length * 2 - 1) {
+                        _pageController.jumpToPage(subscription.length);
+                      }
                     },
                   ),
                 ),
 
-                const Gap(20),
                 //Trending
+                const Gap(35),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Trending Now",
-                        style: GoogleFonts.spaceGrotesk(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ],
+                  child: Text(
+                    "Trending Now",
+                    style: GoogleFonts.spaceGrotesk(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 const Gap(20),
@@ -168,19 +221,15 @@ class _PlansPageState extends State<PlansPage> {
                       Expanded(
                         child: Column(
                           children: [
-                            SubscriptionTile(
+                            TrendingTile(
                               gap: 50,
-                              title: "Netflix",
-                              price: 6.99,
-                              image: 'assets/subscriptions/netflix.png',
+                              trend: subList[0],
                               onPressed: () {},
                             ),
                             const Gap(15),
-                            SubscriptionTile(
+                            TrendingTile(
                               gap: 20,
-                              title: "Youtube",
-                              price: 9.99,
-                              image: 'assets/subscriptions/youtube.png',
+                              trend: subList[6],
                               onPressed: () {},
                             ),
                           ],
@@ -190,25 +239,52 @@ class _PlansPageState extends State<PlansPage> {
                       Expanded(
                         child: Column(
                           children: [
-                            SubscriptionTile(
+                            TrendingTile(
                               gap: 20,
-                              title: "Netflix",
-                              price: 5.99,
-                              image: 'assets/subscriptions/spotify.png',
+                              trend: subList[7],
                               onPressed: () {},
                             ),
                             const Gap(15),
-                            SubscriptionTile(
+                            TrendingTile(
                               gap: 50,
-                              title: "Github",
-                              price: 8.99,
-                              image: 'assets/subscriptions/github.png',
+                              trend: subList[3],
                               onPressed: () {},
                             ),
                           ],
                         ),
                       ),
                     ],
+                  ),
+                ),
+
+                //other sub
+                const Gap(35),
+                //Trending
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Text(
+                    "Subscriptions",
+                    style: GoogleFonts.spaceGrotesk(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const Gap(20),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Column(
+                    children: List.generate(
+                      subList.length,
+                      (index) {
+                        Subscription sub = subList[index];
+                        return Subscriptions(
+                          sub: sub,
+                          onPressed: () {},
+                        );
+                      },
+                    ),
                   ),
                 ),
               ],

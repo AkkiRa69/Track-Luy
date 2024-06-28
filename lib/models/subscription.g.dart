@@ -22,33 +22,18 @@ const SubscriptionSchema = CollectionSchema(
       name: r'amount',
       type: IsarType.double,
     ),
-    r'autoRenew': PropertySchema(
+    r'image': PropertySchema(
       id: 1,
-      name: r'autoRenew',
-      type: IsarType.bool,
-    ),
-    r'category': PropertySchema(
-      id: 2,
-      name: r'category',
+      name: r'image',
       type: IsarType.string,
-    ),
-    r'description': PropertySchema(
-      id: 3,
-      name: r'description',
-      type: IsarType.string,
-    ),
-    r'endDate': PropertySchema(
-      id: 4,
-      name: r'endDate',
-      type: IsarType.dateTime,
     ),
     r'name': PropertySchema(
-      id: 5,
+      id: 2,
       name: r'name',
       type: IsarType.string,
     ),
     r'startDate': PropertySchema(
-      id: 6,
+      id: 3,
       name: r'startDate',
       type: IsarType.dateTime,
     )
@@ -73,8 +58,7 @@ int _subscriptionEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.category.length * 3;
-  bytesCount += 3 + object.description.length * 3;
+  bytesCount += 3 + object.image.length * 3;
   bytesCount += 3 + object.name.length * 3;
   return bytesCount;
 }
@@ -86,12 +70,9 @@ void _subscriptionSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeDouble(offsets[0], object.amount);
-  writer.writeBool(offsets[1], object.autoRenew);
-  writer.writeString(offsets[2], object.category);
-  writer.writeString(offsets[3], object.description);
-  writer.writeDateTime(offsets[4], object.endDate);
-  writer.writeString(offsets[5], object.name);
-  writer.writeDateTime(offsets[6], object.startDate);
+  writer.writeString(offsets[1], object.image);
+  writer.writeString(offsets[2], object.name);
+  writer.writeDateTime(offsets[3], object.startDate);
 }
 
 Subscription _subscriptionDeserialize(
@@ -102,12 +83,9 @@ Subscription _subscriptionDeserialize(
 ) {
   final object = Subscription(
     amount: reader.readDouble(offsets[0]),
-    autoRenew: reader.readBool(offsets[1]),
-    category: reader.readString(offsets[2]),
-    description: reader.readString(offsets[3]),
-    endDate: reader.readDateTimeOrNull(offsets[4]),
-    name: reader.readString(offsets[5]),
-    startDate: reader.readDateTime(offsets[6]),
+    image: reader.readString(offsets[1]),
+    name: reader.readString(offsets[2]),
+    startDate: reader.readDateTime(offsets[3]),
   );
   object.id = id;
   return object;
@@ -123,16 +101,10 @@ P _subscriptionDeserializeProp<P>(
     case 0:
       return (reader.readDouble(offset)) as P;
     case 1:
-      return (reader.readBool(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
-    case 4:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 5:
-      return (reader.readString(offset)) as P;
-    case 6:
       return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -297,362 +269,6 @@ extension SubscriptionQueryFilter
     });
   }
 
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      autoRenewEqualTo(bool value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'autoRenew',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      categoryEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'category',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      categoryGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'category',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      categoryLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'category',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      categoryBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'category',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      categoryStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'category',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      categoryEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'category',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      categoryContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'category',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      categoryMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'category',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      categoryIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'category',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      categoryIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'category',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      descriptionEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'description',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      descriptionGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'description',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      descriptionLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'description',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      descriptionBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'description',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      descriptionStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'description',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      descriptionEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'description',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      descriptionContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'description',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      descriptionMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'description',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      descriptionIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'description',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      descriptionIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'description',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      endDateIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'endDate',
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      endDateIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'endDate',
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      endDateEqualTo(DateTime? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'endDate',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      endDateGreaterThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'endDate',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      endDateLessThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'endDate',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
-      endDateBetween(
-    DateTime? lower,
-    DateTime? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'endDate',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<Subscription, Subscription, QAfterFilterCondition> idEqualTo(
       Id value) {
     return QueryBuilder.apply(this, (query) {
@@ -702,6 +318,140 @@ extension SubscriptionQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Subscription, Subscription, QAfterFilterCondition> imageEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'image',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
+      imageGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'image',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Subscription, Subscription, QAfterFilterCondition> imageLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'image',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Subscription, Subscription, QAfterFilterCondition> imageBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'image',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
+      imageStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'image',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Subscription, Subscription, QAfterFilterCondition> imageEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'image',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Subscription, Subscription, QAfterFilterCondition> imageContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'image',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Subscription, Subscription, QAfterFilterCondition> imageMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'image',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
+      imageIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'image',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Subscription, Subscription, QAfterFilterCondition>
+      imageIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'image',
+        value: '',
       ));
     });
   }
@@ -917,52 +667,15 @@ extension SubscriptionQuerySortBy
     });
   }
 
-  QueryBuilder<Subscription, Subscription, QAfterSortBy> sortByAutoRenew() {
+  QueryBuilder<Subscription, Subscription, QAfterSortBy> sortByImage() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'autoRenew', Sort.asc);
+      return query.addSortBy(r'image', Sort.asc);
     });
   }
 
-  QueryBuilder<Subscription, Subscription, QAfterSortBy> sortByAutoRenewDesc() {
+  QueryBuilder<Subscription, Subscription, QAfterSortBy> sortByImageDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'autoRenew', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterSortBy> sortByCategory() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'category', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterSortBy> sortByCategoryDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'category', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterSortBy> sortByDescription() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'description', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterSortBy>
-      sortByDescriptionDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'description', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterSortBy> sortByEndDate() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'endDate', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterSortBy> sortByEndDateDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'endDate', Sort.desc);
+      return query.addSortBy(r'image', Sort.desc);
     });
   }
 
@@ -1005,55 +718,6 @@ extension SubscriptionQuerySortThenBy
     });
   }
 
-  QueryBuilder<Subscription, Subscription, QAfterSortBy> thenByAutoRenew() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'autoRenew', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterSortBy> thenByAutoRenewDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'autoRenew', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterSortBy> thenByCategory() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'category', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterSortBy> thenByCategoryDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'category', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterSortBy> thenByDescription() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'description', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterSortBy>
-      thenByDescriptionDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'description', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterSortBy> thenByEndDate() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'endDate', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QAfterSortBy> thenByEndDateDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'endDate', Sort.desc);
-    });
-  }
-
   QueryBuilder<Subscription, Subscription, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -1063,6 +727,18 @@ extension SubscriptionQuerySortThenBy
   QueryBuilder<Subscription, Subscription, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Subscription, Subscription, QAfterSortBy> thenByImage() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'image', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Subscription, Subscription, QAfterSortBy> thenByImageDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'image', Sort.desc);
     });
   }
 
@@ -1099,29 +775,10 @@ extension SubscriptionQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Subscription, Subscription, QDistinct> distinctByAutoRenew() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'autoRenew');
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QDistinct> distinctByCategory(
+  QueryBuilder<Subscription, Subscription, QDistinct> distinctByImage(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'category', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QDistinct> distinctByDescription(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'description', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<Subscription, Subscription, QDistinct> distinctByEndDate() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'endDate');
+      return query.addDistinctBy(r'image', caseSensitive: caseSensitive);
     });
   }
 
@@ -1153,27 +810,9 @@ extension SubscriptionQueryProperty
     });
   }
 
-  QueryBuilder<Subscription, bool, QQueryOperations> autoRenewProperty() {
+  QueryBuilder<Subscription, String, QQueryOperations> imageProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'autoRenew');
-    });
-  }
-
-  QueryBuilder<Subscription, String, QQueryOperations> categoryProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'category');
-    });
-  }
-
-  QueryBuilder<Subscription, String, QQueryOperations> descriptionProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'description');
-    });
-  }
-
-  QueryBuilder<Subscription, DateTime?, QQueryOperations> endDateProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'endDate');
+      return query.addPropertyName(r'image');
     });
   }
 

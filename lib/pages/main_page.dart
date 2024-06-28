@@ -1,4 +1,4 @@
-import 'package:akkhara_tracker/components/widgets/add_trasaction_dialog.dart';
+import 'package:akkhara_tracker/components/widgets/expense%20widget/add_trasaction_dialog.dart';
 import 'package:akkhara_tracker/helper/my_alert.dart';
 import 'package:akkhara_tracker/models/expense.dart';
 import 'package:akkhara_tracker/models/expense_database.dart';
@@ -43,7 +43,7 @@ class _MainPageState extends State<MainPage> {
   final iconList = <IconData>[
     FontAwesomeIcons.moneyBillTransfer,
     FontAwesomeIcons.chartColumn,
-    FontAwesomeIcons.wallet,
+    FontAwesomeIcons.diamond,
     FontAwesomeIcons.gear,
   ];
 

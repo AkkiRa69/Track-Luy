@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:akkhara_tracker/models/category.dart';
 import 'package:akkhara_tracker/models/income.dart';
+import 'package:akkhara_tracker/models/subscription.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -19,7 +20,8 @@ class ExpenseDatabase extends ChangeNotifier {
       [
         ExpenseSchema,
         IncomeSchema,
-        CategoriSchema
+        CategoriSchema,
+        SubscriptionSchema
       ], // Ensure ExpenseSchema is correctly defined
       directory: dir.path,
     );

@@ -1,5 +1,5 @@
 import 'package:akkhara_tracker/components/charts/my_bar_chart1.dart';
-import 'package:akkhara_tracker/components/widgets/new_expense_tile.dart';
+import 'package:akkhara_tracker/components/widgets/expense%20widget/new_expense_tile.dart';
 import 'package:akkhara_tracker/models/expense_database.dart';
 import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:flutter/material.dart';

@@ -1,4 +1,5 @@
 import 'package:akkhara_tracker/models/expense_database.dart';
+import 'package:akkhara_tracker/models/subscription_database.dart';
 import 'package:akkhara_tracker/pages/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,10 +15,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ExpenseDatabase(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => ExpenseDatabase(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => SubscriptionDatabase(),
+        ),
+      ],
       child: const MaterialApp(
-        debugShowCheckedModeBanner: false,
         home: MainPage(),
       ),
     );
