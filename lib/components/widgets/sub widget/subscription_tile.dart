@@ -1,3 +1,4 @@
+import 'package:akkhara_tracker/models/subscription.dart';
 import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -5,14 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class SubscriptionTile extends StatelessWidget {
-  final double price;
-  final String title, image;
+  final Subscription sub;
   final VoidCallback onPressed;
   const SubscriptionTile(
       {super.key,
-      required this.price,
-      required this.image,
-      required this.title,
+      required this.sub,
       required this.onPressed});
 
   @override
@@ -36,7 +34,7 @@ class SubscriptionTile extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(50),
               child: Image.asset(
-                image,
+                sub.image,
                 height: 60,
                 fit: BoxFit.cover,
               ),
@@ -47,7 +45,7 @@ class SubscriptionTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                title,
+               sub.name,
                 style: GoogleFonts.spaceGrotesk(
                   color: Colors.white,
                   fontSize: 20,
@@ -60,7 +58,7 @@ class SubscriptionTile extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        "\$${price.toStringAsFixed(2)}/",
+                        "\$${sub.amount.toStringAsFixed(2)}/",
                         style: GoogleFonts.spaceGrotesk(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,

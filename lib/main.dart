@@ -2,6 +2,7 @@ import 'package:akkhara_tracker/models/expense_database.dart';
 import 'package:akkhara_tracker/models/subscription_database.dart';
 import 'package:akkhara_tracker/pages/main_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -24,7 +25,8 @@ class MyApp extends StatelessWidget {
           create: (context) => SubscriptionDatabase(),
         ),
       ],
-      child: const MaterialApp(
+      child: const GetMaterialApp(
+        debugShowCheckedModeBanner: false,
         home: MainPage(),
       ),
     );

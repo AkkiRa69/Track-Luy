@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:akkhara_tracker/models/subscription.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -76,11 +77,32 @@ class SubscriptionDatabase extends ChangeNotifier {
   ];
   List<Subscription> get subList => _subList;
 
+  List<Subscription> _subscriptions = [];
+  List<Subscription> get subscriptions => _subscriptions;
+
   //ADD SUB
+  Future<void> addSub(Subscription sub) async {
+    await isar.writeTxn(
+      () => isar.subscriptions.put(sub),
+    );
+    await readSub();
+  }
 
   //READ SUB
+  Future<void> readSub() async {
+    final subs = await isar.subscriptions.where().findAll();
+    _subscriptions.clear();
+    _subscriptions.addAll(subs);
+    notifyListeners();
+  }
 
   //DELETE SUB
+  Future<void> deleteSub(int id) async {
+    await isar.writeTxn(
+      () => isar.subscriptions.delete(id),
+    );
+    await readSub();
+  }
 
   //UPDATE SUB
 }

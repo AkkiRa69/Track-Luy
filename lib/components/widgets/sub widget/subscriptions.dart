@@ -7,7 +7,12 @@ import 'package:google_fonts/google_fonts.dart';
 class Subscriptions extends StatelessWidget {
   final Subscription sub;
   final VoidCallback onPressed;
-  const Subscriptions({super.key, required this.sub, required this.onPressed});
+
+  const Subscriptions({
+    Key? key,
+    required this.sub,
+    required this.onPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +68,6 @@ class Subscriptions extends StatelessWidget {
                 ),
               ],
             ),
-
             //price
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,

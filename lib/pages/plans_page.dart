@@ -1,4 +1,6 @@
+import 'package:akkhara_tracker/components/widgets/expense%20widget/save_button.dart';
 import 'package:akkhara_tracker/components/widgets/sub%20widget/sub_bill.dart';
+import 'package:akkhara_tracker/components/widgets/sub%20widget/sub_detail.dart';
 import 'package:akkhara_tracker/components/widgets/sub%20widget/subscription_tile.dart';
 import 'package:akkhara_tracker/components/widgets/sub%20widget/subscriptions.dart';
 import 'package:akkhara_tracker/components/widgets/sub%20widget/tiny_sub_tile.dart';
@@ -7,8 +9,11 @@ import 'package:akkhara_tracker/models/subscription.dart';
 import 'package:akkhara_tracker/models/subscription_database.dart';
 import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_swipe_button/flutter_swipe_button.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class PlansPage extends StatefulWidget {
@@ -18,7 +23,8 @@ class PlansPage extends StatefulWidget {
   State<PlansPage> createState() => _PlansPageState();
 }
 
-class _PlansPageState extends State<PlansPage> {
+class _PlansPageState extends State<PlansPage>
+    with AutomaticKeepAliveClientMixin {
   late PageController _pageController;
   // final List<Widget> trending = [
   //   for (int i = 0; i < 10; i++)
@@ -30,15 +36,15 @@ class _PlansPageState extends State<PlansPage> {
   //       onPressed: () {},
   //     ),
   // ];
-  final List<Widget> subscription = [
-    for (int i = 0; i < 10; i++)
-      SubscriptionTile(
-        title: "Netflix",
-        price: 6.99,
-        image: 'assets/subscriptions/netflix.png',
-        onPressed: () {},
-      ),
-  ];
+  // final List<Widget> subscription = [
+  //   for (int i = 0; i < 10; i++)
+  //     SubscriptionTile(
+  //       title: "Netflix",
+  //       price: 6.99,
+  //       image: 'assets/subscriptions/netflix.png',
+  //       onPressed: () {},
+  //     ),
+  // ];
 
   @override
   void dispose() {
@@ -51,15 +57,21 @@ class _PlansPageState extends State<PlansPage> {
     super.initState();
     _pageController = PageController(
       viewportFraction: 0.7,
-      initialPage: subscription.length,
+      // initialPage: subList.length,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final subList = context.watch<SubscriptionDatabase>().subList;
-    // final trendingList = subList.take(4).toList();
-
+    super.build(context);
+    List subList = context.watch<SubscriptionDatabase>().subList;
+    List<Widget> subs = [
+      for (int i = 0; i < subList.length; i++)
+        SubscriptionTile(
+          sub: subList[i],
+          onPressed: () {},
+        ),
+    ];
     return Scaffold(
       backgroundColor: AppColors.backGround,
       body: SafeArea(
@@ -168,9 +180,9 @@ class _PlansPageState extends State<PlansPage> {
                   height: 220,
                   child: PageView.builder(
                     controller: _pageController,
-                    itemCount: subscription.length * 2,
+                    itemCount: subs.length * 2,
                     itemBuilder: (context, index) {
-                      int actualIndex = index % subscription.length;
+                      int actualIndex = index % subs.length;
                       return AnimatedBuilder(
                         animation: _pageController,
                         builder: (context, child) {
@@ -189,12 +201,12 @@ class _PlansPageState extends State<PlansPage> {
                             ),
                           );
                         },
-                        child: subscription[actualIndex],
+                        child: subs[actualIndex],
                       );
                     },
                     onPageChanged: (index) {
-                      if (index == subscription.length * 2 - 1) {
-                        _pageController.jumpToPage(subscription.length);
+                      if (index == subs.length * 2 - 1) {
+                        _pageController.jumpToPage(subs.length);
                       }
                     },
                   ),
@@ -259,7 +271,7 @@ class _PlansPageState extends State<PlansPage> {
 
                 //other sub
                 const Gap(35),
-                //Trending
+                //subs
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: Text(
@@ -281,7 +293,14 @@ class _PlansPageState extends State<PlansPage> {
                         Subscription sub = subList[index];
                         return Subscriptions(
                           sub: sub,
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SubDetail(sub: sub),
+                              ),
+                            );
+                          },
                         );
                       },
                     ),
@@ -294,4 +313,8 @@ class _PlansPageState extends State<PlansPage> {
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
