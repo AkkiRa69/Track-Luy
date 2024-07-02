@@ -14,7 +14,8 @@ class InsightPage extends StatefulWidget {
   State<InsightPage> createState() => _InsightPageState();
 }
 
-class _InsightPageState extends State<InsightPage> {
+class _InsightPageState extends State<InsightPage>
+    with AutomaticKeepAliveClientMixin {
   final List weeks = [];
 
   bool _isFabVisible = false;
@@ -171,4 +172,8 @@ class _InsightPageState extends State<InsightPage> {
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

@@ -165,13 +165,15 @@ class ExpenseDatabase extends ChangeNotifier {
     await readExpenses();
   }
 
-  double totalExpense(List<Expense> expenseList) {
+  double totalExpense() {
     double total = 0;
-    for (Expense ex in expenseList) {
+    for (Expense ex in _expensesList) {
       total += ex.amount;
     }
     return total;
   }
+
+  double get totalBalance => totalIncome() - totalExpense();
 
   final List<Income> _incomeList = [];
   List<Income> get incomeList => _incomeList;
@@ -204,9 +206,9 @@ class ExpenseDatabase extends ChangeNotifier {
     notifyListeners();
   }
 
-  double totalIncome(List<Income> incomeList) {
+  double totalIncome() {
     double total = 0;
-    for (Income income in incomeList) {
+    for (Income income in _incomeList) {
       total += income.amount;
     }
     return total;

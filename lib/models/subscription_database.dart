@@ -81,6 +81,7 @@ class SubscriptionDatabase extends ChangeNotifier {
           await ExpenseDatabase.isar.subscriptions.put(sub);
         });
         await readSub();
+        Get.snackbar('Message', "Paid Successfully!");
       } else {
         Get.snackbar('Error', "${sub.name} Is Already Exists.");
       }

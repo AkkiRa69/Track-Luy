@@ -1,7 +1,9 @@
+import 'package:akkhara_tracker/models/expense_database.dart';
 import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:provider/provider.dart';
 
 class SubBill extends StatelessWidget {
   final double totalAmount;
@@ -9,7 +11,10 @@ class SubBill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double percent = totalAmount / 100;
+    double balance = context.watch<ExpenseDatabase>().totalBalance;
+    double percent = totalAmount / balance;
+    percent = percent.clamp(0.0, 1.0); // Ensure percent is between 0.0 and 1.0
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 25),
       decoration: BoxDecoration(
@@ -31,9 +36,9 @@ class SubBill extends StatelessWidget {
               radius: 45.0,
               lineWidth: 5.0,
               animation: true,
-              percent: percent / 100,
+              percent: percent,
               center: Text(
-                "%${percent.toStringAsFixed(2)}",
+                "${(percent * 100).toStringAsFixed(2)}%",
                 style: const TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 20.0,
@@ -49,7 +54,6 @@ class SubBill extends StatelessWidget {
               ),
             ),
           ),
-          // const Gap(25),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

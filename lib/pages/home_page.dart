@@ -21,7 +21,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin{
   final List<Color> colors1 = [
     const Color(0xff3a43f2),
     const Color.fromARGB(255, 10, 96, 201),
@@ -116,10 +116,9 @@ class _HomePageState extends State<HomePage> {
     List<Income> incomes = context.watch<ExpenseDatabase>().incomeList;
     final combinedList =
         context.watch<ExpenseDatabase>().getCombinedList(expenses, incomes);
-    final totalExpense =
-        context.watch<ExpenseDatabase>().calculateTotalExpense(expenses);
-    final totalIncome =
-        context.watch<ExpenseDatabase>().calculateTotalIncome(incomes);
+    double totalIncome = context.watch<ExpenseDatabase>().totalIncome();
+    double totalExpense = context.watch<ExpenseDatabase>().totalExpense();
+    double totalBalance = context.watch<ExpenseDatabase>().totalBalance;
     totalBalance = totalIncome - totalExpense;
     const style = TextStyle(color: Colors.white);
     return SafeArea(
@@ -360,4 +359,8 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+  
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

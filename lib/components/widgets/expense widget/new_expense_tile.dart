@@ -152,11 +152,16 @@ class _NewExpenseTileState extends State<NewExpenseTile> {
                 const SizedBox(
                   height: 10,
                 ),
-                const Divider(
-                  indent: 10,
-                  endIndent: 10,
-                  thickness: 0.2,
-                  color: Colors.grey,
+                Container(
+                  height: 0.7,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                    colors: [
+                      Colors.white.withOpacity(0.2),
+                      Colors.white,
+                      Colors.white.withOpacity(0.2),
+                    ],
+                  )),
                 ),
               ],
             ),

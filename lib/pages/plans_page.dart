@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class PlansPage extends StatefulWidget {
@@ -30,7 +31,6 @@ class _PlansPageState extends State<PlansPage>
         sub: sub,
         onSwipe: () async {
           await context.read<SubscriptionDatabase>().addSub(sub);
-          Get.snackbar('Message', "Paid Successfully!");
           Navigator.pop(context);
         },
       ),
@@ -63,7 +63,6 @@ class _PlansPageState extends State<PlansPage>
     double totalAmount = subDb.totalAmount();
     double highestSub = subDb.highestSub();
     double lowestSub = subDb.lowestSub();
-    print(subscriptions[0].startDate);
 
     List<Widget> subs = [
       for (int i = 0; i < subscriptions.length; i++)
@@ -89,23 +88,30 @@ class _PlansPageState extends State<PlansPage>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
                         children: [
-                          Text(
-                            "Hi! Bro👋",
-                            style: GoogleFonts.spaceGrotesk(
-                              color: Colors.white,
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          const CircleAvatar(
+                            backgroundImage: AssetImage("assets/images/me.png"),
                           ),
-                          const Gap(5),
-                          Text(
-                            "Find your perfect subscription!",
-                            style: GoogleFonts.spaceGrotesk(
-                              color: Colors.grey[300],
-                            ),
+                          const Gap(15),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Hi! Bro👋",
+                                style: GoogleFonts.spaceGrotesk(
+                                  color: Colors.grey[300],
+                                ),
+                              ),
+                              Text(
+                                "Today, ${DateFormat("MMM dd").format(DateTime.now())}",
+                                style: GoogleFonts.spaceGrotesk(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -133,32 +139,41 @@ class _PlansPageState extends State<PlansPage>
                 ),
 
                 // Tiny sub tile
-                const Gap(10),
+                // const Gap(10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: Row(
                     children: [
                       Expanded(
-                        child: TinySubTile(
-                          title: 'Active subs',
-                          subTitle: '${subscriptions.length}',
-                          color: Colors.orange,
+                        child: RotationTransition(
+                          turns: const AlwaysStoppedAnimation(15 / 360),
+                          child: TinySubTile(
+                            title: 'Active subs',
+                            subTitle: '${subscriptions.length}',
+                            color: Colors.orange,
+                          ),
                         ),
                       ),
                       const Gap(10),
                       Expanded(
-                        child: TinySubTile(
-                          title: 'Highest subs',
-                          subTitle: '\$${highestSub.toStringAsFixed(2)}',
-                          color: Colors.blue,
+                        child: RotationTransition(
+                          turns: const AlwaysStoppedAnimation(-15 / 360),
+                          child: TinySubTile(
+                            title: 'Highest subs',
+                            subTitle: '\$${highestSub.toStringAsFixed(2)}',
+                            color: Colors.blue,
+                          ),
                         ),
                       ),
                       const Gap(10),
                       Expanded(
-                        child: TinySubTile(
-                          title: 'Lowest subs',
-                          subTitle: '\$${lowestSub.toStringAsFixed(2)}',
-                          color: Colors.green,
+                        child: RotationTransition(
+                          turns: const AlwaysStoppedAnimation(20 / 360),
+                          child: TinySubTile(
+                            title: 'Lowest subs',
+                            subTitle: '\$${lowestSub.toStringAsFixed(2)}',
+                            color: Colors.green,
+                          ),
                         ),
                       ),
                     ],
@@ -240,68 +255,78 @@ class _PlansPageState extends State<PlansPage>
                   ),
                 ),
                 const Gap(20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
+                subList.isNotEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25),
+                        child: Row(
                           children: [
-                            RotationTransition(
-                              turns: const AlwaysStoppedAnimation(-10 / 360),
-                              child: TrendingTile(
-                                gap: 50,
-                                trend: subList[0],
-                                onPressed: () {
-                                  subDetailPress(subList[0]);
-                                },
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  if (subList.isNotEmpty)
+                                    RotationTransition(
+                                      turns: const AlwaysStoppedAnimation(
+                                          -10 / 360),
+                                      child: TrendingTile(
+                                        gap: 50,
+                                        trend: subList[0],
+                                        onPressed: () {
+                                          subDetailPress(subList[0]);
+                                        },
+                                      ),
+                                    ),
+                                  const Gap(15),
+                                  if (subList.length > 6)
+                                    RotationTransition(
+                                      turns: const AlwaysStoppedAnimation(
+                                          -20 / 360),
+                                      child: TrendingTile(
+                                        gap: 20,
+                                        trend: subList[6],
+                                        onPressed: () {
+                                          subDetailPress(subList[6]);
+                                        },
+                                      ),
+                                    ),
+                                ],
                               ),
                             ),
                             const Gap(15),
-                            RotationTransition(
-                              turns: const AlwaysStoppedAnimation(-20 / 360),
-                              child: TrendingTile(
-                                gap: 20,
-                                trend: subList[6],
-                                onPressed: () {
-                                  subDetailPress(subList[6]);
-                                },
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  if (subList.length > 7)
+                                    RotationTransition(
+                                      turns: const AlwaysStoppedAnimation(
+                                          20 / 360),
+                                      child: TrendingTile(
+                                        gap: 20,
+                                        trend: subList[7],
+                                        onPressed: () {
+                                          subDetailPress(subList[7]);
+                                        },
+                                      ),
+                                    ),
+                                  const Gap(15),
+                                  if (subList.length > 3)
+                                    RotationTransition(
+                                      turns: const AlwaysStoppedAnimation(
+                                          10 / 360),
+                                      child: TrendingTile(
+                                        gap: 50,
+                                        trend: subList[3],
+                                        onPressed: () {
+                                          subDetailPress(subList[3]);
+                                        },
+                                      ),
+                                    ),
+                                ],
                               ),
                             ),
                           ],
                         ),
-                      ),
-                      const Gap(15),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            RotationTransition(
-                              turns: const AlwaysStoppedAnimation(20 / 360),
-                              child: TrendingTile(
-                                gap: 20,
-                                trend: subList[7],
-                                onPressed: () {
-                                  subDetailPress(subList[7]);
-                                },
-                              ),
-                            ),
-                            const Gap(15),
-                            RotationTransition(
-                              turns: const AlwaysStoppedAnimation(10 / 360),
-                              child: TrendingTile(
-                                gap: 50,
-                                trend: subList[3],
-                                onPressed: () {
-                                  subDetailPress(subList[3]);
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                      )
+                    : const SizedBox(),
 
                 // Other subscriptions
                 const Gap(35),
@@ -317,37 +342,41 @@ class _PlansPageState extends State<PlansPage>
                   ),
                 ),
                 const Gap(20),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Column(
-                    children: List.generate(
-                      subList.length,
-                      (index) {
-                        Subscription sub = subList[index];
-                        return index % 2 == 0
-                            ? RotationTransition(
-                                turns: const AlwaysStoppedAnimation(-3 / 360),
-                                child: Subscriptions(
-                                  sub: sub,
-                                  onPressed: () {
-                                    subDetailPress(sub);
-                                  },
-                                ),
-                              )
-                            : RotationTransition(
-                                turns: const AlwaysStoppedAnimation(3 / 360),
-                                child: Subscriptions(
-                                  isFlip: true,
-                                  sub: sub,
-                                  onPressed: () {
-                                    subDetailPress(sub);
-                                  },
-                                ),
-                              );
-                      },
-                    ),
-                  ),
-                ),
+                subList.isNotEmpty
+                    ? Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 25),
+                        child: Column(
+                          children: List.generate(
+                            subList.length,
+                            (index) {
+                              Subscription sub = subList[index];
+                              return index % 2 == 0
+                                  ? RotationTransition(
+                                      turns: const AlwaysStoppedAnimation(
+                                          -3 / 360),
+                                      child: Subscriptions(
+                                        sub: sub,
+                                        onPressed: () {
+                                          subDetailPress(sub);
+                                        },
+                                      ),
+                                    )
+                                  : RotationTransition(
+                                      turns:
+                                          const AlwaysStoppedAnimation(3 / 360),
+                                      child: Subscriptions(
+                                        isFlip: true,
+                                        sub: sub,
+                                        onPressed: () {
+                                          subDetailPress(sub);
+                                        },
+                                      ),
+                                    );
+                            },
+                          ),
+                        ),
+                      )
+                    : const SizedBox(),
               ],
             ),
           ),

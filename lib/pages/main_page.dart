@@ -26,7 +26,8 @@ List _page = [
   const Scaffold(),
 ];
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends State<MainPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -186,12 +187,12 @@ class _MainPageState extends State<MainPage> {
                 showCupertinoAlert(context, 'Invalid amount format.');
                 return;
               }
-              if (amount > totalBalance) {
-                showCupertinoAlert(
-                    context, "You don't have enough money to spend.");
-                return;
-              }
               if (currentIndex == 0) {
+                if (amount > totalBalance) {
+                  showCupertinoAlert(
+                      context, "You don't have enough money to spend.");
+                  return;
+                }
                 try {
                   Expense ex = Expense(
                     name: categoryName,
@@ -258,4 +259,8 @@ class _MainPageState extends State<MainPage> {
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
