@@ -1,24 +1,12 @@
-import 'dart:io';
-
 import 'package:akkhara_tracker/models/subscription.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:isar/isar.dart';
-import 'package:path_provider/path_provider.dart';
+
+import 'expense_database.dart'; // Import your ExpenseDatabase class
 
 class SubscriptionDatabase extends ChangeNotifier {
-  static late Isar isar;
-
-  //INITIALIZE
-  static Future<void> initialize() async {
-    Directory dir = await getApplicationCacheDirectory();
-    isar = await Isar.open(
-      [SubscriptionSchema],
-      directory: dir.path,
-    );
-  }
-
-  //LIST OF SUB
+  // List of predefined subscriptions
   final List<Subscription> _subList = [
     Subscription(
       name: 'Netflix',
@@ -77,32 +65,99 @@ class SubscriptionDatabase extends ChangeNotifier {
   ];
   List<Subscription> get subList => _subList;
 
-  List<Subscription> _subscriptions = [];
+  final List<Subscription> _subscriptions = [];
   List<Subscription> get subscriptions => _subscriptions;
 
-  //ADD SUB
+  // Add subscription
   Future<void> addSub(Subscription sub) async {
-    await isar.writeTxn(
-      () => isar.subscriptions.put(sub),
-    );
-    await readSub();
+    try {
+      final existingSub = await ExpenseDatabase.isar.subscriptions
+          .filter()
+          .nameEqualTo(sub.name)
+          .findFirst();
+
+      if (existingSub == null) {
+        await ExpenseDatabase.isar.writeTxn(() async {
+          await ExpenseDatabase.isar.subscriptions.put(sub);
+        });
+        await readSub();
+      } else {
+        Get.snackbar('Error', "${sub.name} Is Already Exists.");
+      }
+    } catch (e) {
+      print("Error adding subscription: $e");
+    }
   }
 
-  //READ SUB
+  double totalAmount() {
+    double total = 0;
+    for (Subscription sub in _subscriptions) {
+      total += sub.amount;
+    }
+    return total;
+  }
+
+  double highestSub() {
+    if (_subscriptions.isEmpty) {
+      return 0; // or handle as needed for empty lists
+    }
+
+    double amount = _subscriptions[0].amount;
+    for (Subscription sub in _subscriptions) {
+      if (sub.amount > amount) {
+        amount = sub.amount;
+      }
+    }
+    return amount;
+  }
+
+  double lowestSub() {
+    if (_subscriptions.isEmpty) {
+      return 0; // or handle as needed for empty lists
+    }
+
+    double amount = _subscriptions[0].amount;
+    for (Subscription sub in _subscriptions) {
+      if (sub.amount < amount) {
+        amount = sub.amount;
+      }
+    }
+    return amount;
+  }
+
+  // Read subscriptions
   Future<void> readSub() async {
-    final subs = await isar.subscriptions.where().findAll();
-    _subscriptions.clear();
-    _subscriptions.addAll(subs);
-    notifyListeners();
+    try {
+      final subs = await ExpenseDatabase.isar.subscriptions.where().findAll();
+      _subscriptions.clear();
+      _subscriptions.addAll(subs);
+      notifyListeners();
+    } catch (e) {
+      print("Error reading subscriptions: $e");
+    }
   }
 
-  //DELETE SUB
+  // Delete subscription
   Future<void> deleteSub(int id) async {
-    await isar.writeTxn(
-      () => isar.subscriptions.delete(id),
-    );
-    await readSub();
+    try {
+      await ExpenseDatabase.isar.writeTxn(() async {
+        await ExpenseDatabase.isar.subscriptions.delete(id);
+      });
+      await readSub();
+    } catch (e) {
+      print("Error deleting subscription: $e");
+    }
   }
 
-  //UPDATE SUB
+  // Update subscription
+  Future<void> updateSub(Subscription sub) async {
+    try {
+      await ExpenseDatabase.isar.writeTxn(() async {
+        await ExpenseDatabase.isar.subscriptions.put(sub);
+      });
+      await readSub();
+    } catch (e) {
+      print("Error updating subscription: $e");
+    }
+  }
 }

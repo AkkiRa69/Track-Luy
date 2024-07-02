@@ -7,15 +7,99 @@ import 'package:google_fonts/google_fonts.dart';
 class Subscriptions extends StatelessWidget {
   final Subscription sub;
   final VoidCallback onPressed;
-
+  final bool isFlip;
   const Subscriptions({
-    Key? key,
+    super.key,
     required this.sub,
     required this.onPressed,
-  }) : super(key: key);
+    this.isFlip = false,
+  });
 
   @override
   Widget build(BuildContext context) {
+    return isFlip == true
+        ? buildFlip()
+        : GestureDetector(
+            onTap: onPressed,
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.kindaBlack,
+                borderRadius: BorderRadius.circular(18),
+              ),
+              margin: const EdgeInsets.only(bottom: 15),
+              padding: const EdgeInsets.all(15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            color: AppColors.backGround,
+                          ),
+                          child: Image.asset(
+                            sub.image,
+                            height: 60,
+                          ),
+                        ),
+                      ),
+                      const Gap(20),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            sub.name,
+                            style: GoogleFonts.spaceGrotesk(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            "Premium",
+                            style: GoogleFonts.spaceGrotesk(
+                              color: Colors.grey,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  //price
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        "\$${sub.amount.toStringAsFixed(2)}",
+                        style: GoogleFonts.spaceGrotesk(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "per month",
+                        style: GoogleFonts.spaceGrotesk(
+                          color: Colors.grey,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+  }
+
+  Widget buildFlip() {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
@@ -28,49 +112,8 @@ class Subscriptions extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(
-                      color: AppColors.backGround,
-                    ),
-                    child: Image.asset(
-                      sub.image,
-                      height: 60,
-                    ),
-                  ),
-                ),
-                const Gap(20),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      sub.name,
-                      style: GoogleFonts.spaceGrotesk(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      "Premium",
-                      style: GoogleFonts.spaceGrotesk(
-                        color: Colors.grey,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            //price
             Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   "\$${sub.amount.toStringAsFixed(2)}",
@@ -90,6 +133,48 @@ class Subscriptions extends StatelessWidget {
                 ),
               ],
             ),
+
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      sub.name,
+                      style: GoogleFonts.spaceGrotesk(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "Premium",
+                      style: GoogleFonts.spaceGrotesk(
+                        color: Colors.grey,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const Gap(20),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: const BoxDecoration(
+                      color: AppColors.backGround,
+                    ),
+                    child: Image.asset(
+                      sub.image,
+                      height: 60,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            //price
           ],
         ),
       ),

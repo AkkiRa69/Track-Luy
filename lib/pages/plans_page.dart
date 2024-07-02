@@ -1,4 +1,3 @@
-import 'package:akkhara_tracker/components/widgets/expense%20widget/save_button.dart';
 import 'package:akkhara_tracker/components/widgets/sub%20widget/sub_bill.dart';
 import 'package:akkhara_tracker/components/widgets/sub%20widget/sub_detail.dart';
 import 'package:akkhara_tracker/components/widgets/sub%20widget/subscription_tile.dart';
@@ -9,11 +8,9 @@ import 'package:akkhara_tracker/models/subscription.dart';
 import 'package:akkhara_tracker/models/subscription_database.dart';
 import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_swipe_button/flutter_swipe_button.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class PlansPage extends StatefulWidget {
@@ -26,25 +23,21 @@ class PlansPage extends StatefulWidget {
 class _PlansPageState extends State<PlansPage>
     with AutomaticKeepAliveClientMixin {
   late PageController _pageController;
-  // final List<Widget> trending = [
-  //   for (int i = 0; i < 10; i++)
-  //     TrendingTile(
-  //       gap: 20,
-  //       title: "Netflix",
-  //       price: 6.99,
-  //       image: 'assets/subscriptions/netflix.png',
-  //       onPressed: () {},
-  //     ),
-  // ];
-  // final List<Widget> subscription = [
-  //   for (int i = 0; i < 10; i++)
-  //     SubscriptionTile(
-  //       title: "Netflix",
-  //       price: 6.99,
-  //       image: 'assets/subscriptions/netflix.png',
-  //       onPressed: () {},
-  //     ),
-  // ];
+
+  void subDetailPress(Subscription sub) {
+    Get.to(
+      SubDetail(
+        sub: sub,
+        onSwipe: () async {
+          await context.read<SubscriptionDatabase>().addSub(sub);
+          Get.snackbar('Message', "Paid Successfully!");
+          Navigator.pop(context);
+        },
+      ),
+      transition: Transition.circularReveal,
+      duration: const Duration(milliseconds: 500),
+    );
+  }
 
   @override
   void dispose() {
@@ -55,23 +48,31 @@ class _PlansPageState extends State<PlansPage>
   @override
   void initState() {
     super.initState();
+    context.read<SubscriptionDatabase>().readSub();
     _pageController = PageController(
       viewportFraction: 0.7,
-      // initialPage: subList.length,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final subDb = context.read<SubscriptionDatabase>();
     List subList = context.watch<SubscriptionDatabase>().subList;
+    List<Subscription> subscriptions = subDb.subscriptions;
+    double totalAmount = subDb.totalAmount();
+    double highestSub = subDb.highestSub();
+    double lowestSub = subDb.lowestSub();
+    print(subscriptions[0].startDate);
+
     List<Widget> subs = [
-      for (int i = 0; i < subList.length; i++)
+      for (int i = 0; i < subscriptions.length; i++)
         SubscriptionTile(
-          sub: subList[i],
+          sub: subscriptions[i],
           onPressed: () {},
         ),
     ];
+
     return Scaffold(
       backgroundColor: AppColors.backGround,
       body: SafeArea(
@@ -82,7 +83,7 @@ class _PlansPageState extends State<PlansPage>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                //app bar
+                // App bar
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: Row(
@@ -125,36 +126,38 @@ class _PlansPageState extends State<PlansPage>
                   ),
                 ),
 
-                //bill to pay
+                // Bill to pay
                 const Gap(40),
-                const SubBill(),
+                SubBill(
+                  totalAmount: totalAmount,
+                ),
 
-                //tiny sub tile
+                // Tiny sub tile
                 const Gap(10),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: Row(
                     children: [
                       Expanded(
                         child: TinySubTile(
                           title: 'Active subs',
-                          subTitle: '12',
+                          subTitle: '${subscriptions.length}',
                           color: Colors.orange,
                         ),
                       ),
-                      Gap(10),
+                      const Gap(10),
                       Expanded(
                         child: TinySubTile(
                           title: 'Highest subs',
-                          subTitle: '\$19.99',
+                          subTitle: '\$${highestSub.toStringAsFixed(2)}',
                           color: Colors.blue,
                         ),
                       ),
-                      Gap(10),
+                      const Gap(10),
                       Expanded(
                         child: TinySubTile(
                           title: 'Lowest subs',
-                          subTitle: '\$5.99',
+                          subTitle: '\$${lowestSub.toStringAsFixed(2)}',
                           color: Colors.green,
                         ),
                       ),
@@ -162,57 +165,68 @@ class _PlansPageState extends State<PlansPage>
                   ),
                 ),
 
-                //List of subscription
-                const Gap(35),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Text(
-                    "Your Subscriptions",
-                    style: GoogleFonts.spaceGrotesk(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const Gap(20),
-                SizedBox(
-                  height: 220,
-                  child: PageView.builder(
-                    controller: _pageController,
-                    itemCount: subs.length * 2,
-                    itemBuilder: (context, index) {
-                      int actualIndex = index % subs.length;
-                      return AnimatedBuilder(
-                        animation: _pageController,
-                        builder: (context, child) {
-                          double value = 0.8;
-                          if (_pageController.position.haveDimensions) {
-                            value = _pageController.page! - index;
-                            value = (1 - (value.abs() * 0.3)).clamp(0.0, 1.0);
-                          }
-                          return Center(
-                            child: SizedBox(
-                              height: Curves.easeOut.transform(value) * 220,
-                              width: Curves.easeOut.transform(value) *
-                                  MediaQuery.of(context).size.width *
-                                  0.7,
-                              child: child,
+                // List of subscriptions
+                subscriptions.isNotEmpty
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Gap(35),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 25),
+                            child: Text(
+                              "Your Subscriptions",
+                              style: GoogleFonts.spaceGrotesk(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          );
-                        },
-                        child: subs[actualIndex],
-                      );
-                    },
-                    onPageChanged: (index) {
-                      if (index == subs.length * 2 - 1) {
-                        _pageController.jumpToPage(subs.length);
-                      }
-                    },
-                  ),
-                ),
+                          ),
+                          const Gap(20),
+                          SizedBox(
+                            height: 220,
+                            child: PageView.builder(
+                              controller: _pageController,
+                              itemCount: subs.length,
+                              itemBuilder: (context, index) {
+                                int actualIndex = index % subs.length;
+                                return AnimatedBuilder(
+                                  animation: _pageController,
+                                  builder: (context, child) {
+                                    double value = 0.8;
+                                    if (_pageController
+                                        .position.haveDimensions) {
+                                      value = _pageController.page! - index;
+                                      value = (1 - (value.abs() * 0.3))
+                                          .clamp(0.0, 1.0);
+                                    }
+                                    return Center(
+                                      child: SizedBox(
+                                        height:
+                                            Curves.easeOut.transform(value) *
+                                                220,
+                                        width: Curves.easeOut.transform(value) *
+                                            MediaQuery.of(context).size.width *
+                                            0.7,
+                                        child: child,
+                                      ),
+                                    );
+                                  },
+                                  child: subs[actualIndex],
+                                );
+                              },
+                              onPageChanged: (index) {
+                                if (index == subs.length * 2 - 1) {
+                                  _pageController.jumpToPage(subs.length);
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      )
+                    : const SizedBox(),
 
-                //Trending
+                // Trending
                 const Gap(35),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -233,16 +247,26 @@ class _PlansPageState extends State<PlansPage>
                       Expanded(
                         child: Column(
                           children: [
-                            TrendingTile(
-                              gap: 50,
-                              trend: subList[0],
-                              onPressed: () {},
+                            RotationTransition(
+                              turns: const AlwaysStoppedAnimation(-10 / 360),
+                              child: TrendingTile(
+                                gap: 50,
+                                trend: subList[0],
+                                onPressed: () {
+                                  subDetailPress(subList[0]);
+                                },
+                              ),
                             ),
                             const Gap(15),
-                            TrendingTile(
-                              gap: 20,
-                              trend: subList[6],
-                              onPressed: () {},
+                            RotationTransition(
+                              turns: const AlwaysStoppedAnimation(-20 / 360),
+                              child: TrendingTile(
+                                gap: 20,
+                                trend: subList[6],
+                                onPressed: () {
+                                  subDetailPress(subList[6]);
+                                },
+                              ),
                             ),
                           ],
                         ),
@@ -251,16 +275,26 @@ class _PlansPageState extends State<PlansPage>
                       Expanded(
                         child: Column(
                           children: [
-                            TrendingTile(
-                              gap: 20,
-                              trend: subList[7],
-                              onPressed: () {},
+                            RotationTransition(
+                              turns: const AlwaysStoppedAnimation(20 / 360),
+                              child: TrendingTile(
+                                gap: 20,
+                                trend: subList[7],
+                                onPressed: () {
+                                  subDetailPress(subList[7]);
+                                },
+                              ),
                             ),
                             const Gap(15),
-                            TrendingTile(
-                              gap: 50,
-                              trend: subList[3],
-                              onPressed: () {},
+                            RotationTransition(
+                              turns: const AlwaysStoppedAnimation(10 / 360),
+                              child: TrendingTile(
+                                gap: 50,
+                                trend: subList[3],
+                                onPressed: () {
+                                  subDetailPress(subList[3]);
+                                },
+                              ),
                             ),
                           ],
                         ),
@@ -269,9 +303,8 @@ class _PlansPageState extends State<PlansPage>
                   ),
                 ),
 
-                //other sub
+                // Other subscriptions
                 const Gap(35),
-                //subs
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: Text(
@@ -291,17 +324,26 @@ class _PlansPageState extends State<PlansPage>
                       subList.length,
                       (index) {
                         Subscription sub = subList[index];
-                        return Subscriptions(
-                          sub: sub,
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SubDetail(sub: sub),
-                              ),
-                            );
-                          },
-                        );
+                        return index % 2 == 0
+                            ? RotationTransition(
+                                turns: const AlwaysStoppedAnimation(-3 / 360),
+                                child: Subscriptions(
+                                  sub: sub,
+                                  onPressed: () {
+                                    subDetailPress(sub);
+                                  },
+                                ),
+                              )
+                            : RotationTransition(
+                                turns: const AlwaysStoppedAnimation(3 / 360),
+                                child: Subscriptions(
+                                  isFlip: true,
+                                  sub: sub,
+                                  onPressed: () {
+                                    subDetailPress(sub);
+                                  },
+                                ),
+                              );
                       },
                     ),
                   ),
@@ -315,6 +357,5 @@ class _PlansPageState extends State<PlansPage>
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }

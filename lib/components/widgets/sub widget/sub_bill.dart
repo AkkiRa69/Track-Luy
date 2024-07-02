@@ -4,10 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class SubBill extends StatelessWidget {
-  const SubBill({super.key});
+  final double totalAmount;
+  const SubBill({super.key, required this.totalAmount});
 
   @override
   Widget build(BuildContext context) {
+    double percent = totalAmount / 100;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 25),
       decoration: BoxDecoration(
@@ -29,10 +31,10 @@ class SubBill extends StatelessWidget {
               radius: 45.0,
               lineWidth: 5.0,
               animation: true,
-              percent: 0.7,
-              center: const Text(
-                "%70",
-                style: TextStyle(
+              percent: percent / 100,
+              center: Text(
+                "%${percent.toStringAsFixed(2)}",
+                style: const TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 20.0,
                 ),
@@ -52,7 +54,7 @@ class SubBill extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "\$180.55",
+                "\$${totalAmount.toStringAsFixed(2)}",
                 style: GoogleFonts.lato(
                   fontSize: 38,
                   fontWeight: FontWeight.bold,

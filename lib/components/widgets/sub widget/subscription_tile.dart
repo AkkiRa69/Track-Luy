@@ -9,9 +9,11 @@ class SubscriptionTile extends StatelessWidget {
   final Subscription sub;
   final VoidCallback onPressed;
   const SubscriptionTile(
-      {super.key,
-      required this.sub,
-      required this.onPressed});
+      {super.key, required this.sub, required this.onPressed});
+  double get remainingPercentage {
+    int totalDays = 30;
+    return sub.remainingDays / totalDays;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,7 @@ class SubscriptionTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-               sub.name,
+                sub.name,
                 style: GoogleFonts.spaceGrotesk(
                   color: Colors.white,
                   fontSize: 20,
@@ -89,7 +91,7 @@ class SubscriptionTile extends StatelessWidget {
               animationDuration: 1000,
               barRadius: const Radius.circular(15),
               lineHeight: 5,
-              percent: 0.5,
+              percent: remainingPercentage,
               backgroundColor: Colors.black54,
               linearGradient: const LinearGradient(
                 colors: [
@@ -108,9 +110,10 @@ class SubscriptionTile extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      "20",
+                      "${sub.remainingDays}",
                       style: GoogleFonts.spaceGrotesk(
                         color: Colors.white,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
