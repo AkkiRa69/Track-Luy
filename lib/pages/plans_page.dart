@@ -8,6 +8,7 @@ import 'package:akkhara_tracker/models/subscription.dart';
 import 'package:akkhara_tracker/models/subscription_database.dart';
 import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,6 +25,7 @@ class PlansPage extends StatefulWidget {
 class _PlansPageState extends State<PlansPage>
     with AutomaticKeepAliveClientMixin {
   late PageController _pageController;
+  late ScrollController _singleChildScrollController;
 
   void subDetailPress(Subscription sub) {
     Get.to(
@@ -42,16 +44,36 @@ class _PlansPageState extends State<PlansPage>
   @override
   void dispose() {
     _pageController.dispose();
+    _singleChildScrollController.dispose();
     super.dispose();
   }
+
+  bool _isFabVisible = false;
 
   @override
   void initState() {
     super.initState();
     context.read<SubscriptionDatabase>().readSub();
-    _pageController = PageController(
-      viewportFraction: 0.7,
-    );
+    _pageController = PageController(viewportFraction: 0.7);
+    _singleChildScrollController = ScrollController();
+
+    _singleChildScrollController.addListener(() {
+      if (_singleChildScrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        if (!_isFabVisible) {
+          setState(() {
+            _isFabVisible = true;
+          });
+        }
+      } else if (_singleChildScrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        if (_isFabVisible) {
+          setState(() {
+            _isFabVisible = false;
+          });
+        }
+      }
+    });
   }
 
   @override
@@ -74,10 +96,33 @@ class _PlansPageState extends State<PlansPage>
 
     return Scaffold(
       backgroundColor: AppColors.backGround,
+      floatingActionButton: _isFabVisible
+          ? FloatingActionButton(
+              backgroundColor: AppColors.kindaBlack,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50),
+              ),
+              onPressed: () {
+                setState(() {
+                  _isFabVisible = false;
+                });
+                _singleChildScrollController.animateTo(
+                  0,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
+                );
+              },
+              child: const Icon(
+                Icons.arrow_upward_rounded,
+                color: Colors.white,
+              ),
+            )
+          : null,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(top: 15),
           child: SingleChildScrollView(
+            controller: _singleChildScrollController,
             physics: const BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,7 +184,6 @@ class _PlansPageState extends State<PlansPage>
                 ),
 
                 // Tiny sub tile
-                // const Gap(10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: Row(
@@ -181,65 +225,56 @@ class _PlansPageState extends State<PlansPage>
                 ),
 
                 // List of subscriptions
-                subscriptions.isNotEmpty
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Gap(35),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 25),
-                            child: Text(
-                              "Your Subscriptions",
-                              style: GoogleFonts.spaceGrotesk(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                if (subscriptions.isNotEmpty) ...[
+                  const Gap(35),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    child: Text(
+                      "Your Subscriptions",
+                      style: GoogleFonts.spaceGrotesk(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const Gap(20),
+                  SizedBox(
+                    height: 220,
+                    child: PageView.builder(
+                      controller: _pageController,
+                      itemCount: subs.length,
+                      itemBuilder: (context, index) {
+                        int actualIndex = index % subs.length;
+                        return AnimatedBuilder(
+                          animation: _pageController,
+                          builder: (context, child) {
+                            double value = 0.8;
+                            if (_pageController.position.haveDimensions) {
+                              value = _pageController.page! - index;
+                              value = (1 - (value.abs() * 0.3)).clamp(0.0, 1.0);
+                            }
+                            return Center(
+                              child: SizedBox(
+                                height: Curves.easeOut.transform(value) * 220,
+                                width: Curves.easeOut.transform(value) *
+                                    MediaQuery.of(context).size.width *
+                                    0.7,
+                                child: child,
                               ),
-                            ),
-                          ),
-                          const Gap(20),
-                          SizedBox(
-                            height: 220,
-                            child: PageView.builder(
-                              controller: _pageController,
-                              itemCount: subs.length,
-                              itemBuilder: (context, index) {
-                                int actualIndex = index % subs.length;
-                                return AnimatedBuilder(
-                                  animation: _pageController,
-                                  builder: (context, child) {
-                                    double value = 0.8;
-                                    if (_pageController
-                                        .position.haveDimensions) {
-                                      value = _pageController.page! - index;
-                                      value = (1 - (value.abs() * 0.3))
-                                          .clamp(0.0, 1.0);
-                                    }
-                                    return Center(
-                                      child: SizedBox(
-                                        height:
-                                            Curves.easeOut.transform(value) *
-                                                220,
-                                        width: Curves.easeOut.transform(value) *
-                                            MediaQuery.of(context).size.width *
-                                            0.7,
-                                        child: child,
-                                      ),
-                                    );
-                                  },
-                                  child: subs[actualIndex],
-                                );
-                              },
-                              onPageChanged: (index) {
-                                if (index == subs.length * 2 - 1) {
-                                  _pageController.jumpToPage(subs.length);
-                                }
-                              },
-                            ),
-                          ),
-                        ],
-                      )
-                    : const SizedBox(),
+                            );
+                          },
+                          child: subs[actualIndex],
+                        );
+                      },
+                      onPageChanged: (index) {
+                        if (index == subs.length * 2 - 1) {
+                          _pageController.jumpToPage(subs.length);
+                        }
+                      },
+                    ),
+                  ),
+                ],
 
                 // Trending
                 const Gap(35),
@@ -255,78 +290,75 @@ class _PlansPageState extends State<PlansPage>
                   ),
                 ),
                 const Gap(20),
-                subList.isNotEmpty
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 25),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  if (subList.isNotEmpty)
-                                    RotationTransition(
-                                      turns: const AlwaysStoppedAnimation(
-                                          -10 / 360),
-                                      child: TrendingTile(
-                                        gap: 50,
-                                        trend: subList[0],
-                                        onPressed: () {
-                                          subDetailPress(subList[0]);
-                                        },
-                                      ),
-                                    ),
-                                  const Gap(15),
-                                  if (subList.length > 6)
-                                    RotationTransition(
-                                      turns: const AlwaysStoppedAnimation(
-                                          -20 / 360),
-                                      child: TrendingTile(
-                                        gap: 20,
-                                        trend: subList[6],
-                                        onPressed: () {
-                                          subDetailPress(subList[6]);
-                                        },
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                            const Gap(15),
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  if (subList.length > 7)
-                                    RotationTransition(
-                                      turns: const AlwaysStoppedAnimation(
-                                          20 / 360),
-                                      child: TrendingTile(
-                                        gap: 20,
-                                        trend: subList[7],
-                                        onPressed: () {
-                                          subDetailPress(subList[7]);
-                                        },
-                                      ),
-                                    ),
-                                  const Gap(15),
-                                  if (subList.length > 3)
-                                    RotationTransition(
-                                      turns: const AlwaysStoppedAnimation(
-                                          10 / 360),
-                                      child: TrendingTile(
-                                        gap: 50,
-                                        trend: subList[3],
-                                        onPressed: () {
-                                          subDetailPress(subList[3]);
-                                        },
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ],
+                if (subList.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              if (subList.isNotEmpty)
+                                RotationTransition(
+                                  turns:
+                                      const AlwaysStoppedAnimation(-10 / 360),
+                                  child: TrendingTile(
+                                    gap: 50,
+                                    trend: subList[0],
+                                    onPressed: () {
+                                      subDetailPress(subList[0]);
+                                    },
+                                  ),
+                                ),
+                              const Gap(15),
+                              if (subList.length > 6)
+                                RotationTransition(
+                                  turns:
+                                      const AlwaysStoppedAnimation(-20 / 360),
+                                  child: TrendingTile(
+                                    gap: 20,
+                                    trend: subList[6],
+                                    onPressed: () {
+                                      subDetailPress(subList[6]);
+                                    },
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
-                      )
-                    : const SizedBox(),
+                        const Gap(15),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              if (subList.length > 7)
+                                RotationTransition(
+                                  turns: const AlwaysStoppedAnimation(20 / 360),
+                                  child: TrendingTile(
+                                    gap: 20,
+                                    trend: subList[7],
+                                    onPressed: () {
+                                      subDetailPress(subList[7]);
+                                    },
+                                  ),
+                                ),
+                              const Gap(15),
+                              if (subList.length > 3)
+                                RotationTransition(
+                                  turns: const AlwaysStoppedAnimation(10 / 360),
+                                  child: TrendingTile(
+                                    gap: 50,
+                                    trend: subList[3],
+                                    onPressed: () {
+                                      subDetailPress(subList[3]);
+                                    },
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
 
                 // Other subscriptions
                 const Gap(35),
@@ -342,41 +374,38 @@ class _PlansPageState extends State<PlansPage>
                   ),
                 ),
                 const Gap(20),
-                subList.isNotEmpty
-                    ? Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 25),
-                        child: Column(
-                          children: List.generate(
-                            subList.length,
-                            (index) {
-                              Subscription sub = subList[index];
-                              return index % 2 == 0
-                                  ? RotationTransition(
-                                      turns: const AlwaysStoppedAnimation(
-                                          -3 / 360),
-                                      child: Subscriptions(
-                                        sub: sub,
-                                        onPressed: () {
-                                          subDetailPress(sub);
-                                        },
-                                      ),
-                                    )
-                                  : RotationTransition(
-                                      turns:
-                                          const AlwaysStoppedAnimation(3 / 360),
-                                      child: Subscriptions(
-                                        isFlip: true,
-                                        sub: sub,
-                                        onPressed: () {
-                                          subDetailPress(sub);
-                                        },
-                                      ),
-                                    );
-                            },
-                          ),
-                        ),
-                      )
-                    : const SizedBox(),
+                if (subList.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    child: Column(
+                      children: List.generate(
+                        subList.length,
+                        (index) {
+                          Subscription sub = subList[index];
+                          return index % 2 == 0
+                              ? RotationTransition(
+                                  turns: const AlwaysStoppedAnimation(-3 / 360),
+                                  child: Subscriptions(
+                                    sub: sub,
+                                    onPressed: () {
+                                      subDetailPress(sub);
+                                    },
+                                  ),
+                                )
+                              : RotationTransition(
+                                  turns: const AlwaysStoppedAnimation(3 / 360),
+                                  child: Subscriptions(
+                                    isFlip: true,
+                                    sub: sub,
+                                    onPressed: () {
+                                      subDetailPress(sub);
+                                    },
+                                  ),
+                                );
+                        },
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
