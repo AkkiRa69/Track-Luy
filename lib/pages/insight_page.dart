@@ -51,6 +51,7 @@ class _InsightPageState extends State<InsightPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final expenses = context.watch<ExpenseDatabase>().expenseList;
     double totalExpense =
         context.watch<ExpenseDatabase>().calculateTotalExpense(expenses);

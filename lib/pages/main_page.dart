@@ -30,6 +30,7 @@ class _MainPageState extends State<MainPage>
     with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       body: _page[_bottomNavIndex],
       backgroundColor: Colors.transparent,
