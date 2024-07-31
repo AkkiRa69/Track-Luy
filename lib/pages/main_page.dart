@@ -3,9 +3,10 @@ import 'package:akkhara_tracker/helper/my_alert.dart';
 import 'package:akkhara_tracker/models/expense.dart';
 import 'package:akkhara_tracker/models/expense_database.dart';
 import 'package:akkhara_tracker/models/income.dart';
+import 'package:akkhara_tracker/pages/portfolio_page.dart';
 import 'package:akkhara_tracker/pages/home_page.dart';
 import 'package:akkhara_tracker/pages/insight_page.dart';
-import 'package:akkhara_tracker/pages/plans_page.dart';
+import 'package:akkhara_tracker/pages/subscription_page.dart';
 import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -19,19 +20,27 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 
-List _page = [
-  const HomePage(),
-  const InsightPage(),
-  const PlansPage(),
-  const Scaffold(),
-];
-
 class _MainPageState extends State<MainPage>
     with AutomaticKeepAliveClientMixin {
+  late final List<Widget> _page;
+  int _bottomNavIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _page = [
+      const HomePage(),
+      const InsightPage(),
+      const PlansPage(),
+      const AboutMePage(),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      drawer: const Drawer(),
       body: _page[_bottomNavIndex],
       backgroundColor: Colors.transparent,
       floatingActionButton: _buildFloating(),
@@ -39,8 +48,6 @@ class _MainPageState extends State<MainPage>
       bottomNavigationBar: _buildAnimatedBottomNavbar(),
     );
   }
-
-  int _bottomNavIndex = 0;
 
   final iconList = <IconData>[
     FontAwesomeIcons.moneyBillTransfer,
@@ -73,14 +80,12 @@ class _MainPageState extends State<MainPage>
           _bottomNavIndex = index;
         });
       },
-      // Add other params if necessary
     );
   }
 
-  double iconSize = 30.0;
-
   //for add trasaction
   TextEditingController amountController = TextEditingController();
+
   TextEditingController desController = TextEditingController();
   TextEditingController emojiController = TextEditingController();
   TextEditingController cateNameController = TextEditingController();

@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class CustomeAppBar extends StatelessWidget {
   final void Function()? onPressed;
-  const CustomeAppBar({super.key,required this.onPressed});
+  const CustomeAppBar({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

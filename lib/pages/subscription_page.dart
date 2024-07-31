@@ -190,7 +190,7 @@ class _PlansPageState extends State<PlansPage>
                     children: [
                       Expanded(
                         child: RotationTransition(
-                          turns: const AlwaysStoppedAnimation(15 / 360),
+                          turns: const AlwaysStoppedAnimation(20 / 360),
                           child: TinySubTile(
                             title: 'Active subs',
                             subTitle: '${subscriptions.length}',
@@ -198,10 +198,9 @@ class _PlansPageState extends State<PlansPage>
                           ),
                         ),
                       ),
-                      const Gap(10),
                       Expanded(
-                        child: RotationTransition(
-                          turns: const AlwaysStoppedAnimation(-15 / 360),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 20),
                           child: TinySubTile(
                             title: 'Highest subs',
                             subTitle: '\$${highestSub.toStringAsFixed(2)}',
@@ -209,10 +208,9 @@ class _PlansPageState extends State<PlansPage>
                           ),
                         ),
                       ),
-                      const Gap(10),
                       Expanded(
                         child: RotationTransition(
-                          turns: const AlwaysStoppedAnimation(20 / 360),
+                          turns: const AlwaysStoppedAnimation(-20 / 360),
                           child: TinySubTile(
                             title: 'Lowest subs',
                             subTitle: '\$${lowestSub.toStringAsFixed(2)}',

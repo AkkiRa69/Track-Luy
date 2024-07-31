@@ -306,6 +306,9 @@ class _HomePageState extends State<HomePage>
             ),
 
             //expense list
+            const SizedBox(
+              height: 10,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
               child: Row(
@@ -314,7 +317,7 @@ class _HomePageState extends State<HomePage>
                   Text(
                     "Transactions",
                     style: GoogleFonts.lato(
-                      fontSize: 18,
+                      fontSize: 20,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),

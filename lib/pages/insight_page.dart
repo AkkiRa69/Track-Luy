@@ -99,7 +99,7 @@ class _InsightPageState extends State<InsightPage>
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.only(top: 15, left: 25),
+                padding: EdgeInsets.only(left: 25),
                 child: Text(
                   "Total Expense",
                   style: TextStyle(

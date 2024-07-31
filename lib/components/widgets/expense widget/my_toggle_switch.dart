@@ -23,6 +23,7 @@ class MyToggleSwitch extends StatelessWidget {
       //expense + income button
       child: Row(
         children: [
+          Tab(),
           Expanded(
             child: ToggleSwitch(
               minWidth: double.infinity,
