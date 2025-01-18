@@ -87,7 +87,6 @@ class _HomePageState extends State<HomePage>
     return Scaffold(
       backgroundColor: AppColors.backGround,
       body: _buildBody(context),
-      drawer: const Drawer(),
       floatingActionButton: _isFabVisible
           ? FloatingActionButton(
               backgroundColor: AppColors.kindaBlack,
@@ -137,7 +136,6 @@ class _HomePageState extends State<HomePage>
               child: Builder(builder: (context) {
                 return CustomeAppBar(
                   onPressed: () {
-                    Scaffold.of(context).openDrawer();
                   },
                 );
               }),

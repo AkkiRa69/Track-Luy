@@ -218,109 +218,111 @@ class _ExpenseTileState extends State<ExpenseTile> {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
-      builder: (context) => AddTransactionSheet(
-        currentIndex: currentIndex,
-        onToggle: (index) {
-          setState(() {
-            currentIndex = index!;
-          });
-        },
-        amountController: amountControllerModal, // Use the new controller here
-        desController: desControllerModal, // Use the new controller here
-        emojiController: emojiController,
-        cateNameController: cateNameController,
-        categories: categories,
-        onSelectedCategory: (value) {
-          setState(() {
-            isSelected = true;
-            selectedCategory = value;
-          });
-        },
-        isSelected: isSelected,
-        selectedCategory: selectedCategory,
-        selectedDate: selectedDate,
-        onSelectedDate: (value) {
-          if (value != null) {
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: AddTransactionSheet(
+          currentIndex: currentIndex,
+          onToggle: (index) {
             setState(() {
-              selectedDate = value;
+              currentIndex = index!;
             });
-          }
-        },
-        initilizeSelection: cate,
-        pastDays: dates,
-        initDate: date,
-        onSave: () async {
-          try {
-            // Validate category format
-            List<String> categoryParts = selectedCategory.split(' ');
-            if (categoryParts.length < 2) {
-              showCupertinoAlert(context, 'Invalid category format.');
-              return;
+          },
+          amountController:
+              amountControllerModal, // Use the new controller here
+          desController: desControllerModal, // Use the new controller here
+          emojiController: emojiController,
+          cateNameController: cateNameController,
+          categories: categories,
+          onSelectedCategory: (value) {
+            setState(() {
+              isSelected = true;
+              selectedCategory = value;
+            });
+          },
+          isSelected: isSelected,
+          selectedCategory: selectedCategory,
+          selectedDate: selectedDate,
+          onSelectedDate: (value) {
+            if (value != null) {
+              setState(() {
+                selectedDate = value;
+              });
             }
+          },
+          initilizeSelection: cate,
+          pastDays: dates,
+          initDate: date,
+          onSave: () async {
+            try {
+              // Validate category format
+              List<String> categoryParts = selectedCategory.split(' ');
+              if (categoryParts.length < 2) {
+                showCupertinoAlert(context, 'Invalid category format.');
+                return;
+              }
 
-            String emoji = categoryParts[0];
-            String categoryName = categoryParts.sublist(1).join(' ');
+              String emoji = categoryParts[0];
+              String categoryName = categoryParts.sublist(1).join(' ');
 
-            // Parse and validate amount
-            double amount = double.parse(amountControllerModal.text);
-            if (amount > totalBalance) {
-              showCupertinoAlert(context, "You don't have enough money.");
-              return;
-            }
+              // Parse amount
+              double amount = double.parse(amountControllerModal.text);
 
-            if (currentIndex == 0) {
-              // Expense update case
-              Expense ex = Expense(
-                name: categoryName,
-                amount: amount,
-                date: selectedDate,
-                des: desControllerModal.text,
-                emoji: emoji,
+              if (currentIndex == 0) {
+                // Expense update case
+                Expense ex = Expense(
+                  name: categoryName,
+                  amount: amount,
+                  date: selectedDate,
+                  des: desControllerModal.text,
+                  emoji: emoji,
+                );
+
+                // Update the expense in the database
+                await context
+                    .read<ExpenseDatabase>()
+                    .updateExpense(widget.expense.id, ex);
+
+                // Navigate back and clear fields
+                Navigator.pop(context);
+                amountControllerModal.clear();
+                desControllerModal.clear();
+                selectedCategory = '';
+                selectedDate = DateTime.now();
+              }
+
+              if (currentIndex == 1) {
+                // Income addition case
+                Income income = Income(
+                  name: categoryName,
+                  amount: amount,
+                  date: selectedDate,
+                  des: desControllerModal.text,
+                  emoji: emoji,
+                );
+
+                // Delete the expense and add income
+                await context
+                    .read<ExpenseDatabase>()
+                    .deleteExpense(widget.expense.id);
+                await context.read<ExpenseDatabase>().addIncome(income);
+
+                // Navigate back and clear fields
+                Navigator.pop(context);
+                amountControllerModal.clear();
+                desControllerModal.clear();
+                selectedCategory = '';
+                selectedDate = DateTime.now();
+              }
+            } catch (e) {
+              // Show error message using SnackBar
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(e.toString())),
               );
-
-              // Update the expense in the database
-              await context
-                  .read<ExpenseDatabase>()
-                  .updateExpense(widget.expense.id, ex);
-
-              // Navigate back and clear fields
-              Navigator.pop(context);
-              amountControllerModal.clear();
-              desControllerModal.clear();
-              selectedCategory = '';
-              selectedDate = DateTime.now();
             }
-
-            if (currentIndex == 1) {
-              // Income addition case
-              Income income = Income(
-                name: categoryName,
-                amount: amount,
-                date: selectedDate,
-                des: desControllerModal.text,
-                emoji: emoji,
-              );
-
-              // Delete the expense and add income
-              await context
-                  .read<ExpenseDatabase>()
-                  .deleteExpense(widget.expense.id);
-              await context.read<ExpenseDatabase>().addIncome(income);
-
-              // Navigate back and clear fields
-              Navigator.pop(context);
-              amountControllerModal.clear();
-              desControllerModal.clear();
-              selectedCategory = '';
-              selectedDate = DateTime.now();
-            }
-          } catch (e) {
-            // Show error message using SnackBar
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(e.toString())),
-            );
-          }
-        },
+          },
+        ),
       ),
     );
   }

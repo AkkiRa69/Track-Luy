@@ -3,9 +3,9 @@ import 'package:akkhara_tracker/helper/my_alert.dart';
 import 'package:akkhara_tracker/models/expense.dart';
 import 'package:akkhara_tracker/models/expense_database.dart';
 import 'package:akkhara_tracker/models/income.dart';
-import 'package:akkhara_tracker/pages/portfolio_page.dart';
 import 'package:akkhara_tracker/pages/home_page.dart';
 import 'package:akkhara_tracker/pages/insight_page.dart';
+import 'package:akkhara_tracker/pages/portfolio_page.dart';
 import 'package:akkhara_tracker/pages/subscription_page.dart';
 import 'package:akkhara_tracker/theme/app_colors.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
@@ -101,162 +101,182 @@ class _MainPageState extends State<MainPage>
   double totalBalance = 0;
 
   Widget _buildFloating() {
-    categories = context.watch<ExpenseDatabase>().categories;
-    pastDays = context.watch<ExpenseDatabase>().dates;
-    List<Expense> expenses = context.watch<ExpenseDatabase>().expenseList;
-    List<Income> incomes = context.watch<ExpenseDatabase>().incomeList;
-    final totalExpense =
-        context.watch<ExpenseDatabase>().calculateTotalExpense(expenses);
-    final totalIncome =
-        context.watch<ExpenseDatabase>().calculateTotalIncome(incomes);
-    totalBalance = totalIncome - totalExpense;
+    // categories = context.watch<ExpenseDatabase>().categories;
+    // pastDays = context.watch<ExpenseDatabase>().dates;
+    // List<Expense> expenses = context.watch<ExpenseDatabase>().expenseList;
+    // List<Income> incomes = context.watch<ExpenseDatabase>().incomeList;
+    // final totalExpense =
+    //     context.watch<ExpenseDatabase>().calculateTotalExpense(expenses);
+    // final totalIncome =
+    //     context.watch<ExpenseDatabase>().calculateTotalIncome(incomes);
+    // totalBalance = totalIncome - totalExpense;
     return FloatingActionButton(
       backgroundColor: AppColors.kindaBlack,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(50),
       ),
       onPressed: () {
+        // Initialize controllers here instead of as class fields
+        final amountController = TextEditingController();
+        final desController = TextEditingController();
+        final emojiController = TextEditingController();
+        final cateNameController = TextEditingController();
+
+        // Get data from provider
+        final categories = context.read<ExpenseDatabase>().categories;
+        final pastDays = context.read<ExpenseDatabase>().dates;
+        final expenses = context.read<ExpenseDatabase>().expenseList;
+        final incomes = context.read<ExpenseDatabase>().incomeList;
+        final totalExpense =
+            context.read<ExpenseDatabase>().calculateTotalExpense(expenses);
+        final totalIncome =
+            context.read<ExpenseDatabase>().calculateTotalIncome(incomes);
+        final totalBalance = totalIncome - totalExpense;
+
         showModalBottomSheet(
-          sheetAnimationStyle: AnimationStyle(
-            curve: Curves.bounceInOut,
-            duration: const Duration(
-              milliseconds: 300,
-            ),
-          ),
-          backgroundColor: const Color(0xff000000),
-          // expand: isExpand,
           isScrollControlled: true,
+          backgroundColor: const Color(0xff000000),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(12),
               topRight: Radius.circular(12),
             ),
           ),
-          barrierColor: Colors.black.withOpacity(0.8),
           context: context,
-          builder: (context) => AddTransactionSheet(
-            currentIndex: currentIndex,
-            onToggle: (index) {
-              setState(() {
-                currentIndex = index!;
-              });
-            },
-            amountController: amountController,
-            desController: desController,
-            emojiController: emojiController,
-            cateNameController: cateNameController,
-            categories: categories,
-            onSelectedCategory: (value) {
-              setState(() {
-                isSelected = true;
-                selectedCategory = value;
-              });
-            },
-            isSelected: isSelected,
-            selectedCategory: selectedCategory,
-            selectedDate: selectedDate,
-            onSelectedDate: (value) {
-              if (value != null) {
-                setState(() {
-                  selectedDate = value;
-                });
-              }
-            },
-            onSave: () async {
-              if (isSelected == false) {
-                selectedCategory = categories.last;
-                // print("last$selectedCategory");
-              }
-              if (isSelected == true) {
-                setState(() {
-                  isSelected = false;
-                });
-              }
+          builder: (context) {
+            bool isSelected = false;
+            String selectedCategory =
+                categories.isNotEmpty ? categories.last : '';
+            DateTime selectedDate =
+                pastDays.isNotEmpty ? pastDays.first : DateTime.now();
+            int currentIndex = 0;
 
-              // Process the selected category
-              List<String> categoryParts = selectedCategory.split(' ');
-              if (categoryParts.length < 2) {
-                showCupertinoAlert(context, 'Invalid category format.');
-                return;
-              }
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: StatefulBuilder(
+                builder: (context, setState) {
+                  return AddTransactionSheet(
+                    currentIndex: currentIndex,
+                    onToggle: (index) {
+                      setState(() {
+                        currentIndex = index ?? 0;
+                      });
+                    },
+                    amountController: amountController,
+                    desController: desController,
+                    emojiController: emojiController,
+                    cateNameController: cateNameController,
+                    categories: categories,
+                    onSelectedCategory: (value) {
+                      setState(() {
+                        isSelected = true;
+                        selectedCategory = value;
+                      });
+                    },
+                    isSelected: isSelected,
+                    selectedCategory: selectedCategory,
+                    selectedDate: selectedDate,
+                    onSelectedDate: (value) {
+                      if (value != null) {
+                        setState(() {
+                          selectedDate = value;
+                        });
+                      }
+                    },
+                    onSave: () async {
+                      // Handle empty categories
+                      if (categories.isEmpty) {
+                        showCupertinoAlert(
+                            context, 'Please add categories first.');
+                        return;
+                      }
 
-              String emoji = categoryParts[0];
-              String categoryName = categoryParts.sublist(1).join(' ');
+                      if (!isSelected) {
+                        selectedCategory = categories.last;
+                      }
 
-              String inputText = amountController.text.replaceAll(',', '.');
-              late double amount;
-              try {
-                amount = double.parse(inputText);
-                print("Parsed amount: $amount");
-              } catch (e) {
-                print("Error parsing amount: $e");
-                showCupertinoAlert(context, 'Invalid amount format.');
-                return;
-              }
-              if (currentIndex == 0) {
-                if (amount > totalBalance) {
-                  showCupertinoAlert(
-                      context, "You don't have enough money to spend.");
-                  return;
-                }
-                try {
-                  Expense ex = Expense(
-                    name: categoryName,
-                    amount: amount,
-                    date: selectedDate,
-                    des: desController.text,
-                    emoji: emoji,
+                      // Validate category format
+                      List<String> categoryParts = selectedCategory.split(' ');
+                      if (categoryParts.length < 2) {
+                        showCupertinoAlert(context, 'Invalid category format.');
+                        return;
+                      }
+
+                      String emoji = categoryParts[0];
+                      String categoryName = categoryParts.sublist(1).join(' ');
+
+                      // Validate amount
+                      String inputText =
+                          amountController.text.replaceAll(',', '.');
+                      double? amount;
+                      try {
+                        amount = double.parse(inputText);
+                      } catch (e) {
+                        showCupertinoAlert(context, 'Invalid amount format.');
+                        return;
+                      }
+
+                      // Handle expense
+                      if (currentIndex == 0) {
+                        if (amount > totalBalance) {
+                          showCupertinoAlert(
+                              context, "You don't have enough money to spend.");
+                          return;
+                        }
+
+                        try {
+                          final expense = Expense(
+                            name: categoryName,
+                            amount: amount,
+                            date: selectedDate,
+                            des: desController.text,
+                            emoji: emoji,
+                          );
+                          await context
+                              .read<ExpenseDatabase>()
+                              .addExpense(expense);
+                          Navigator.pop(context);
+                        } catch (e) {
+                          showCupertinoAlert(context, e.toString());
+                          return;
+                        }
+                      }
+                      // Handle income
+                      else if (currentIndex == 1) {
+                        try {
+                          final income = Income(
+                            name: categoryName,
+                            amount: amount,
+                            date: selectedDate,
+                            des: desController.text,
+                            emoji: emoji,
+                          );
+                          await context
+                              .read<ExpenseDatabase>()
+                              .addIncome(income);
+                          Navigator.pop(context);
+                        } catch (e) {
+                          showCupertinoAlert(context, e.toString());
+                          return;
+                        }
+                      }
+
+                      // Clear controllers
+                      amountController.clear();
+                      desController.clear();
+                    },
+                    initilizeSelection:
+                        categories.isNotEmpty ? categories.last : '',
+                    pastDays: pastDays,
+                    initDate:
+                        pastDays.isNotEmpty ? pastDays.first : DateTime.now(),
                   );
-
-                  // Add the Expense to the database
-                  await context.read<ExpenseDatabase>().addExpense(ex);
-
-                  // Navigate back
-                  Navigator.pop(context);
-                  amountController.clear();
-                  desController.clear();
-                  selectedCategory = categories.last; // Reset to last category
-                  selectedDate = pastDays.first; // Reset to initial date
-                } catch (e) {
-                  // Show error message using SnackBar
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(e.toString())),
-                  );
-                }
-              }
-              if (currentIndex == 1) {
-                try {
-                  // Create the Income object
-                  Income income = Income(
-                    name: categoryName,
-                    amount: amount,
-                    date: selectedDate,
-                    des: desController.text,
-                    emoji: emoji,
-                  );
-
-                  // Add the Income to the database
-                  await context.read<ExpenseDatabase>().addIncome(income);
-                  print('added luy = $amount');
-
-                  // Navigate back
-                  Navigator.pop(context);
-                  amountController.clear();
-                  desController.clear();
-                  selectedCategory = categories.last; // Reset to last category
-                  selectedDate = pastDays.first; // Reset to initial date
-                } catch (e) {
-                  // Show error message using SnackBar
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(e.toString())),
-                  );
-                }
-              }
-            },
-            initilizeSelection: categories.last,
-            pastDays: pastDays,
-            initDate: pastDays.first,
-          ),
+                },
+              ),
+            );
+          },
         );
       },
       child: const Icon(
